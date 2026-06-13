@@ -1,0 +1,12 @@
+# secrets - never commit
+agent_config.yaml
+.env
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.uv/
+
+# runtime output - do not push
+crucible_audit.jsonl

@@ -1,0 +1,14 @@
+# Copy this file to  agent_config.yaml  and fill in the real values.
+#   cp agent_config.yaml.example agent_config.yaml
+#
+# agent_config.yaml is gitignored - NEVER commit real api keys.
+# Get agent_id (Agent UUID) + api_key from each agent's page in Band
+# (app.band.ai -> Agents -> Red Agent / Blue Agent).
+
+red:
+  agent_id: "PASTE_RED_AGENT_UUID"
+  api_key: "PASTE_RED_API_KEY"
+
+blue:
+  agent_id: "PASTE_BLUE_AGENT_UUID"
+  api_key: "PASTE_BLUE_API_KEY"

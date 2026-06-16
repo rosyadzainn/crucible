@@ -20,6 +20,7 @@ import ScoreRing from "@/components/ScoreRing";
    chrome strings are translated via t(); agent content is rendered verbatim. */
 
 const KNOWN_AGENTS = new Set(["red", "blue", "arbiter", "human", "user"]);
+const PASS_THRESHOLD = 80;
 
 function agentClass(agent: string) {
   const a = agent?.toLowerCase();
@@ -1027,20 +1028,33 @@ function Passport({
       {byRound.length > 0 && (
         <div className="barwrap">
           <div className="barlbl">{t("score_by_round")}</div>
-          {byRound.map((b, i) => (
-            <div className="bar" key={b.round}>
-              <span className="rl">
-                {t("round")} {b.round}
-              </span>
-              <span className="track">
-                <span
-                  className={`fill ${i === byRound.length - 1 ? "b" : "a"}`}
-                  style={{ width: `${b.score}%` }}
-                />
-              </span>
-              <span className="bn">{b.score}</span>
-            </div>
-          ))}
+          {byRound.map((b, i) => {
+            const pass = b.score >= PASS_THRESHOLD;
+            const isLast = i === byRound.length - 1;
+            const verdict = pass
+              ? t("round_verdict_cleared")
+              : isLast
+              ? t("round_verdict_limit")
+              : t("round_verdict_below");
+            return (
+              <div className="bar" key={b.round}>
+                <div className="bar-row">
+                  <span className={`rl${pass ? " pass" : ""}`}>
+                    {t("round")} {b.round}
+                  </span>
+                  <span className="track">
+                    <span
+                      className={`fill${pass ? " pass" : ""}`}
+                      style={{ width: `${b.score}%` }}
+                    />
+                    <span className="tmark" style={{ left: `${PASS_THRESHOLD}%` }} />
+                  </span>
+                  <span className={`bn${pass ? " pass" : ""}`}>{b.score}</span>
+                </div>
+                <div className="bar-verdict">{verdict}</div>
+              </div>
+            );
+          })}
         </div>
       )}
     </aside>

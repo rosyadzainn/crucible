@@ -560,18 +560,26 @@ body {
 }
 .bar {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  flex-direction: column;
+  margin-bottom: 10px;
   font-family: var(--font-mono);
   font-size: 11px;
+}
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .bar .rl {
   color: var(--text3);
   width: 48px;
   flex: 0 0 auto;
 }
+.bar .rl.pass {
+  color: var(--text);
+}
 .bar .track {
+  position: relative;
   flex: 1;
   height: 7px;
   border-radius: 4px;
@@ -579,20 +587,36 @@ body {
   overflow: hidden;
 }
 .bar .fill {
+  display: block;
   height: 100%;
   border-radius: 4px;
+  background: rgba(255, 255, 255, 0.26);
 }
-.bar .fill.a {
+.bar .fill.pass {
+  background: rgba(255, 255, 255, 0.82);
+}
+.bar .tmark {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
   background: rgba(255, 255, 255, 0.3);
 }
-.bar .fill.b {
-  background: rgba(255, 255, 255, 0.72);
-}
 .bar .bn {
-  color: var(--text2);
+  color: var(--text3);
   width: 20px;
   text-align: right;
   flex: 0 0 auto;
+}
+.bar .bn.pass {
+  color: var(--text);
+}
+.bar-verdict {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 3px;
+  padding-left: 58px;
+  opacity: 0.75;
 }
 
 /* status messages (loading / error / empty) */

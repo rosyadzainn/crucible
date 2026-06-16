@@ -91,7 +91,8 @@ const RUNBOOK_LINES = [
   },
 ];
 
-function Stage1({ onDone }: { onDone: (n: number) => void }) {
+function Stage1({ onDone, onSkip }: { onDone: (n: number) => void; onSkip: () => void }) {
+  const { t } = useLanguage();
   const [flagged, setFlagged] = useState<Set<number>>(new Set());
   const [fresh, setFresh] = useState(true);
   // foundFlaws counts only flagged lines that are actually dangerous — passed to Stage 2
@@ -143,7 +144,7 @@ function Stage1({ onDone }: { onDone: (n: number) => void }) {
           </button>
         </div>
       </div>
-      <button className="skip" onClick={() => onDone(foundFlaws)}>Skip the game →</button>
+      <button className="skip" onClick={onSkip}>{t("try_skip")}</button>
     </>
   );
 }
@@ -672,7 +673,7 @@ export default function TryPage() {
     <div className={`try stage-${stage}`}>
       <TryNav stage={stage} />
       <main>
-        {stage === 1 && <div className="wrap"><Stage1 onDone={(n) => { setFoundFlaws(n); setStage(2); }} /></div>}
+        {stage === 1 && <div className="wrap"><Stage1 onDone={(n) => { setFoundFlaws(n); setStage(2); }} onSkip={() => setStage(5)} /></div>}
         {stage === 2 && <div className="wrap"><Stage2 foundFlaws={foundFlaws} onDone={() => setStage(3)} onBack={() => setStage(1)} /></div>}
         {stage === 3 && <div className="wrap-lg"><Stage3 onDone={() => setStage(4)} onBack={() => setStage(2)} /></div>}
         {stage === 4 && <div className="wrap-sm"><Stage4 onDone={() => setStage(5)} onBack={() => setStage(3)} /></div>}

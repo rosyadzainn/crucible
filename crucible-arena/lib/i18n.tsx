@@ -118,6 +118,7 @@ const en: Dict = {
   footer_left: "Crucible · Adversarial hardening desk",
   transition_opening: "Opening the Arena…",
   transition_walkthrough: "Starting the walkthrough…",
+  try_skip: "Skip to the result →",
 
   /* ── landing page (marketing). Brand/proper nouns (Crucible, Red, Blue,
      Arbiter, Band), the tagline "Break it before reality does.", the
@@ -344,6 +345,7 @@ const id: Dict = {
   footer_left: "Crucible · Meja perkuatan adversarial",
   transition_opening: "Membuka Arena…",
   transition_walkthrough: "Memulai walkthrough…",
+  try_skip: "Langsung ke hasil →",
 
   // ── landing page (marketing) ──
   lp_nav_agents: "Para Agen",

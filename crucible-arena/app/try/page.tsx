@@ -230,7 +230,7 @@ const FINDINGS = [
   },
 ];
 
-function Stage2({ foundFlaws, onDone }: { foundFlaws: number; onDone: () => void }) {
+function Stage2({ foundFlaws, onDone, onBack }: { foundFlaws: number; onDone: () => void; onBack: () => void }) {
   const redCountRef = useRef<HTMLDivElement>(null);
   const [animated, setAnimated] = useState(false);
 
@@ -302,7 +302,7 @@ function Stage2({ foundFlaws, onDone }: { foundFlaws: number; onDone: () => void
 
       <div className="next-cta s2">
         <button className="btn btn-primary" onClick={onDone}>Let Blue harden the runbook →</button>
-        <span className="nextback" style={{ cursor: "default", opacity: 0.5 }}>← Back to Stage 1</span>
+        <button className="nextback" onClick={onBack}>← Back to Stage 1</button>
       </div>
     </>
   );
@@ -373,7 +373,7 @@ const CHANGES = [
   },
 ];
 
-function Stage3({ onDone }: { onDone: () => void }) {
+function Stage3({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
   return (
     <>
       <div className="shead s3">
@@ -421,7 +421,7 @@ function Stage3({ onDone }: { onDone: () => void }) {
 
       <div className="next-cta s3">
         <button className="btn btn-primary" onClick={onDone}>See Arbiter&apos;s verdict →</button>
-        <span className="nextback" style={{ cursor: "default", opacity: 0.5 }}>← Back to Stage 2</span>
+        <button className="nextback" onClick={onBack}>← Back to Stage 2</button>
       </div>
     </>
   );
@@ -429,7 +429,7 @@ function Stage3({ onDone }: { onDone: () => void }) {
 
 // ─── Stage 4 — Arbiter judges ─────────────────────────────────────────────────
 
-function Stage4({ onDone }: { onDone: () => void }) {
+function Stage4({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
   const gnumRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -525,7 +525,7 @@ function Stage4({ onDone }: { onDone: () => void }) {
 
       <div className="next-cta s4">
         <button className="btn btn-primary" onClick={onDone}>Verify the chain →</button>
-        <span className="nextback" style={{ cursor: "default", opacity: 0.5 }}>← Back to Stage 3</span>
+        <button className="nextback" onClick={onBack}>← Back to Stage 3</button>
       </div>
     </>
   );
@@ -533,7 +533,7 @@ function Stage4({ onDone }: { onDone: () => void }) {
 
 // ─── Stage 5 — Verify + Passport ─────────────────────────────────────────────
 
-function Stage5({ onRestart }: { onRestart: () => void }) {
+function Stage5({ onRestart, onBack }: { onRestart: () => void; onBack: () => void }) {
   const [broken, setBroken] = useState(false);
   const [entering, setEntering] = useState(false);
   const router = useRouter();
@@ -654,6 +654,7 @@ function Stage5({ onRestart }: { onRestart: () => void }) {
       <div className="finalcta">
         <button className="btn btn-primary" onClick={handleArenaClick}>Open the Arena →</button>
         <button className="restart" onClick={onRestart}>Try another document</button>
+        <button className="nextback" onClick={onBack}>← Back to Stage 4</button>
       </div>
     </div>
     </>
@@ -672,10 +673,10 @@ export default function TryPage() {
       <TryNav stage={stage} />
       <main>
         {stage === 1 && <div className="wrap"><Stage1 onDone={(n) => { setFoundFlaws(n); setStage(2); }} /></div>}
-        {stage === 2 && <div className="wrap"><Stage2 foundFlaws={foundFlaws} onDone={() => setStage(3)} /></div>}
-        {stage === 3 && <div className="wrap-lg"><Stage3 onDone={() => setStage(4)} /></div>}
-        {stage === 4 && <div className="wrap-sm"><Stage4 onDone={() => setStage(5)} /></div>}
-        {stage === 5 && <Stage5 onRestart={restart} />}
+        {stage === 2 && <div className="wrap"><Stage2 foundFlaws={foundFlaws} onDone={() => setStage(3)} onBack={() => setStage(1)} /></div>}
+        {stage === 3 && <div className="wrap-lg"><Stage3 onDone={() => setStage(4)} onBack={() => setStage(2)} /></div>}
+        {stage === 4 && <div className="wrap-sm"><Stage4 onDone={() => setStage(5)} onBack={() => setStage(3)} /></div>}
+        {stage === 5 && <Stage5 onRestart={restart} onBack={() => setStage(4)} />}
       </main>
     </div>
   );

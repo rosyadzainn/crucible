@@ -147,7 +147,7 @@
   align-items: center;
   gap: 14px;
 }
-.try .nextback { font-size: 13px; color: var(--text3); transition: color .2s; }
+.try .nextback { font-size: 13px; color: var(--text3); transition: color .2s; background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
 .try .nextback:hover { color: var(--text2); }
 
 /* ── Keyframes ───────────────────────────────────────────────────────────── */

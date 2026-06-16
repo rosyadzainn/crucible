@@ -165,38 +165,13 @@ html:has(.landing) {
   color: #0b0c0f;
   font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
 }
-/* EN | ID toggle — same look/behavior as the dashboard toggle, scoped here */
-.landing .langtoggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+/* language dropdown — scoped overrides for the landing nav */
+.landing .langdrop-trigger {
   font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
   font-size: 12.5px;
 }
-.landing .lang {
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: inherit;
-  letter-spacing: 0.04em;
-  color: var(--text3);
-  transition: color 0.12s;
-}
-.landing .lang:hover {
-  color: var(--text2);
-}
-.landing .lang.on {
-  color: var(--text);
-}
-.landing .lang:focus-visible {
-  outline: 2px solid var(--text2);
-  outline-offset: 2px;
-  border-radius: 3px;
-}
-.landing .langdiv {
-  color: var(--line2);
+.landing .langdrop-menu {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
 }
 @media (max-width: 760px) {
   .landing .navlinks a:not(.navcta) {

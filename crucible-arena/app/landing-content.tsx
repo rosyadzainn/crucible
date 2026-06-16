@@ -4,6 +4,7 @@ import { useEffect, Fragment, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n";
+import LangDropdown from "@/components/LangDropdown";
 import CrucibleIntro from "@/components/CrucibleIntro";
 import ArenaTransition from "@/components/ArenaTransition";
 
@@ -64,32 +65,6 @@ const IconLock = () => (
   </svg>
 );
 
-function LangToggle() {
-  const { lang, setLang } = useLanguage();
-  return (
-    <span className="langtoggle" role="group" aria-label="Language">
-      <button
-        type="button"
-        className={`lang ${lang === "en" ? "on" : ""}`}
-        aria-pressed={lang === "en"}
-        onClick={() => setLang("en")}
-      >
-        EN
-      </button>
-      <span className="langdiv" aria-hidden>
-        |
-      </span>
-      <button
-        type="button"
-        className={`lang ${lang === "id" ? "on" : ""}`}
-        aria-pressed={lang === "id"}
-        onClick={() => setLang("id")}
-      >
-        ID
-      </button>
-    </span>
-  );
-}
 
 export default function LandingContent() {
   const { t } = useLanguage();
@@ -183,7 +158,7 @@ export default function LandingContent() {
             <Link href="#agents">{t("lp_nav_agents")}</Link>
             <Link href="#how">{t("lp_nav_how")}</Link>
             <Link href="#proof">{t("lp_nav_proof")}</Link>
-            <LangToggle />
+            <LangDropdown />
           </div>
         </div>
       </nav>

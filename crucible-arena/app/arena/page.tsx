@@ -12,6 +12,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { supabase, type AuditEvent } from "@/lib/supabase";
 import { useLanguage, plural, type Lang, type TFn } from "@/lib/i18n";
+import LangDropdown from "@/components/LangDropdown";
 import ScoreRing from "@/components/ScoreRing";
 
 /* ─────────────────────────  presentation helpers  ─────────────────────────
@@ -52,7 +53,7 @@ function actionLabel(ev: AuditEvent, t: TFn, lang: Lang): string {
       if (!n) return t("action_attack");
       return t("action_attack_n", {
         n,
-        vulnWord: plural(lang, n, "vulnerability", "vulnerabilities", "kerentanan"),
+        vulnWord: plural(lang, n, "vulnerability", "vulnerabilities", { id: "kerentanan", es: ["vulnerabilidad", "vulnerabilidades"], fr: ["vulnérabilité", "vulnérabilités"], de: ["Schwachstelle", "Schwachstellen"], pt: ["vulnerabilidade", "vulnerabilidades"], it: "vulnerabilità" }),
       });
     }
     case "revision":
@@ -342,32 +343,6 @@ function HexMark() {
   );
 }
 
-function LangToggle() {
-  const { lang, setLang } = useLanguage();
-  return (
-    <span className="langtoggle" role="group" aria-label="Language">
-      <button
-        type="button"
-        className={`lang ${lang === "en" ? "on" : ""}`}
-        aria-pressed={lang === "en"}
-        onClick={() => setLang("en")}
-      >
-        EN
-      </button>
-      <span className="langdiv" aria-hidden>
-        |
-      </span>
-      <button
-        type="button"
-        className={`lang ${lang === "id" ? "on" : ""}`}
-        aria-pressed={lang === "id"}
-        onClick={() => setLang("id")}
-      >
-        ID
-      </button>
-    </span>
-  );
-}
 
 const MD_COMPONENTS = {
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
@@ -622,7 +597,7 @@ export default function Home() {
           </span>
         </div>
         <div className="status">
-          <LangToggle />
+          <LangDropdown />
           {live && (
             <span className="live">
               <span className="dot" /> {t("live")}
@@ -751,7 +726,7 @@ function RunView({
               {t("events_rounds", {
                 n: events.length,
                 m: rounds,
-                roundsWord: plural(lang, rounds, "round", "rounds", "ronde"),
+                roundsWord: plural(lang, rounds, "round", "rounds", { id: "ronde", es: ["ronda", "rondas"], fr: ["manche", "manches"], de: ["Runde", "Runden"], pt: ["rodada", "rodadas"], it: "round" }),
               })}
             </span>
           </div>
@@ -878,7 +853,7 @@ function Passport({
           : t("sealed_unverified");
   const sealedBroken = verify?.status === "broken";
 
-  const roundsWord = plural(lang, rounds, "round", "rounds", "ronde");
+  const roundsWord = plural(lang, rounds, "round", "rounds", { id: "ronde", es: ["ronda", "rondas"], fr: ["manche", "manches"], de: ["Runde", "Runden"], pt: ["rodada", "rodadas"], it: "round" });
 
   return (
     <aside className="ledger passport" aria-label="Hardening Passport">
@@ -917,14 +892,8 @@ function Passport({
                 {t("detail_adversarial", {
                   n: vulnN,
                   m: redRounds,
-                  vulnWord: plural(
-                    lang,
-                    vulnN,
-                    "vulnerability",
-                    "vulnerabilities",
-                    "kerentanan",
-                  ),
-                  roundsWord: plural(lang, redRounds, "round", "rounds", "ronde"),
+                  vulnWord: plural(lang, vulnN, "vulnerability", "vulnerabilities", { id: "kerentanan", es: ["vulnerabilidad", "vulnerabilidades"], fr: ["vulnérabilité", "vulnérabilités"], de: ["Schwachstelle", "Schwachstellen"], pt: ["vulnerabilidade", "vulnerabilidades"], it: "vulnerabilità" }),
+                  roundsWord: plural(lang, redRounds, "round", "rounds", { id: "ronde", es: ["ronda", "rondas"], fr: ["manche", "manches"], de: ["Runde", "Runden"], pt: ["rodada", "rodadas"], it: "round" }),
                 })}
                 {hasTally && (
                   <span className="tally">
@@ -961,7 +930,7 @@ function Passport({
             lastRevision
               ? t("detail_hardened", {
                   n: revisions.length,
-                  passWord: plural(lang, revisions.length, "pass", "passes", "putaran"),
+                  passWord: plural(lang, revisions.length, "pass", "passes", { id: "putaran", es: ["iteración", "iteraciones"], fr: ["itération", "itérations"], de: ["Durchlauf", "Durchläufe"], pt: ["iteração", "iterações"], it: ["iterazione", "iterazioni"] }),
                 })
               : t("detail_no_revision")
           }

@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, Fragment } from "react";
+import { useEffect, Fragment, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n";
 import CrucibleIntro from "@/components/CrucibleIntro";
+import ArenaTransition from "@/components/ArenaTransition";
 
 /* Bilingual marketing landing. Uses the SAME i18n context as /arena
    (useLanguage → { lang, setLang, t }, localStorage key "crucible-lang"), so a
@@ -91,6 +93,16 @@ function LangToggle() {
 
 export default function LandingContent() {
   const { t } = useLanguage();
+  const router = useRouter();
+  const [arenaTransition, setArenaTransition] = useState(false);
+
+  function handleArenaClick() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      router.push("/arena");
+      return;
+    }
+    setArenaTransition(true);
+  }
 
   useEffect(() => {
     if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
@@ -126,6 +138,7 @@ export default function LandingContent() {
 
   return (
     <>
+    {arenaTransition && <ArenaTransition caption={t("transition_opening")} />}
     <CrucibleIntro />
     <div className="landing">
       <div className="aurora" aria-hidden="true">
@@ -203,9 +216,9 @@ export default function LandingContent() {
                 <span className="ctacap">{t("lp_hero_cap_try")}</span>
               </div>
               <div className="ctawrap">
-                <Link href="/arena" className="btn btn-ghost">
+                <button className="btn btn-ghost" onClick={handleArenaClick}>
                   {t("lp_hero_cta_how")}
-                </Link>
+                </button>
                 <span className="ctacap">{t("lp_hero_cap_arena")}</span>
               </div>
             </div>
@@ -598,9 +611,9 @@ export default function LandingContent() {
             <Link href="/try" className="btn btn-primary">
               {t("lp_final_demo")}
             </Link>
-            <Link href="/arena" className="btn btn-ghost">
+            <button className="btn btn-ghost" onClick={handleArenaClick}>
               {t("lp_final_arena")}
-            </Link>
+            </button>
           </div>
         </div>
       </section>

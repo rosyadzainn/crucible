@@ -184,9 +184,6 @@ export default function LandingContent() {
             <Link href="#how">{t("lp_nav_how")}</Link>
             <Link href="#proof">{t("lp_nav_proof")}</Link>
             <LangToggle />
-            <button className="btn btn-primary navcta" onClick={handleWalkthroughClick}>
-              {t("lp_nav_harden")}
-            </button>
           </div>
         </div>
       </nav>

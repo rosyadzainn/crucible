@@ -130,7 +130,6 @@ const en: Dict = {
   lp_nav_agents: "The Agents",
   lp_nav_how: "How It Works",
   lp_nav_proof: "Proof",
-  lp_nav_harden: "Walk through it",
 
   lp_hero_eyebrow: "Adversarial document hardening",
   lp_hero_lede:
@@ -351,7 +350,6 @@ const id: Dict = {
   lp_nav_agents: "Para Agen",
   lp_nav_how: "Cara Kerja",
   lp_nav_proof: "Bukti",
-  lp_nav_harden: "Telusuri contoh",
 
   lp_hero_eyebrow: "Perkuatan dokumen secara adversarial",
   lp_hero_lede:

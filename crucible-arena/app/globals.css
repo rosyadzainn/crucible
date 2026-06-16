@@ -961,6 +961,67 @@ footer {
   flex-wrap: wrap;
 }
 
+/* ── arena ambient aurora ── */
+.arena-aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.arena-aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+.arena-aurora .ab1 {
+  width: 52vw;
+  height: 52vw;
+  top: -14vw;
+  right: -8vw;
+  background: radial-gradient(circle at center, rgba(94, 160, 224, 0.5), transparent 70%);
+  opacity: 0.14;
+}
+.arena-aurora .ab2 {
+  width: 44vw;
+  height: 44vw;
+  bottom: -12vw;
+  left: -6vw;
+  background: radial-gradient(circle at center, rgba(235, 90, 82, 0.5), transparent 70%);
+  opacity: 0.12;
+}
+.arena-aurora .ab3 {
+  width: 36vw;
+  height: 36vw;
+  top: 32vh;
+  left: 38vw;
+  background: radial-gradient(circle at center, rgba(227, 162, 62, 0.5), transparent 70%);
+  opacity: 0.10;
+}
+/* lift .wrap above the fixed aurora — scoped via sibling combinator so landing/.try are unaffected */
+.arena-aurora ~ .wrap {
+  position: relative;
+  z-index: 1;
+}
+@keyframes arena-drift1 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-12vw, 10vh) scale(1.15); }
+}
+@keyframes arena-drift2 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(14vw, -12vh) scale(0.88); }
+}
+@keyframes arena-drift3 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-9vw, -10vh) scale(1.12); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .arena-aurora .ab1 { animation: arena-drift1 34s ease-in-out infinite alternate; }
+  .arena-aurora .ab2 { animation: arena-drift2 43s ease-in-out infinite alternate; }
+  .arena-aurora .ab3 { animation: arena-drift3 27s ease-in-out infinite alternate; }
+}
+
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(230, 232, 236, 0.35);

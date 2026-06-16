@@ -605,7 +605,13 @@ export default function Home() {
   const broken = verify?.status === "broken";
 
   return (
-    <div className="wrap">
+    <>
+      <div className="arena-aurora" aria-hidden="true">
+        <span className="ab1" />
+        <span className="ab2" />
+        <span className="ab3" />
+      </div>
+      <div className="wrap">
       <div className="topbar">
         <div className="brand">
           <HexMark />
@@ -661,6 +667,7 @@ export default function Home() {
         <span>Band of Agents Hackathon · Track 3</span>
       </footer>
     </div>
+    </>
   );
 }
 

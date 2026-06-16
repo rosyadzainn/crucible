@@ -670,7 +670,7 @@
   margin-top: 16px;
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 18px;
   opacity: 0;
   transform: scale(.96);
   animation: vIn .5s cubic-bezier(.22,.72,.24,1) 2.55s forwards;
@@ -696,6 +696,7 @@
 .try .vmeta .vlbl { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text3); font-weight: 600; }
 .try .vmeta .vval { font-family: ui-monospace, monospace; font-size: 13px; color: var(--text); }
 .try .vsigned { margin-top: 6px; font-size: 12.5px; color: var(--text3); }
+.try .vsigned strong { margin-left: 3px; }
 
 .try .next-cta.s4 { opacity: 0; animation: revealUp .5s ease 3.1s forwards; }
 
@@ -730,7 +731,7 @@
 .try .phead {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 24px 36px;
+  gap: 24px;
   padding: 30px 34px 24px;
   border-bottom: 1px solid var(--line);
   align-items: flex-start;

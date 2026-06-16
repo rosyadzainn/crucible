@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crucible — Adversarial Document Hardening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0C0F; --bg2:#0F1115; --surface:#14161B; --surface2:#1A1D23;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+    --text:#ECEEF1; --text2:#9DA0A8; --text3:#63666F;
+    --red:#EB5A52; --red-soft:rgba(235,90,82,.13);
+    --blue:#5EA0E0; --blue-soft:rgba(94,160,224,.13);
+    --amber:#E3A23E; --amber-soft:rgba(227,162,62,.14);
+    --violet:#A989E6; --violet-soft:rgba(169,137,230,.14);
+    --high:#E3A23E;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+  body{margin:0; background:var(--bg); color:var(--text);
+    font-family:"Plus Jakarta Sans",system-ui,sans-serif; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .aurora{position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none}
+  .aurora span{position:absolute; display:block; border-radius:50%; filter:blur(70px); background:radial-gradient(circle at center, rgba(255,255,255,.6), rgba(255,255,255,0) 70%); opacity:.12}
+  .aurora .a1{width:46vw; height:46vw; top:-12vw; left:-6vw; opacity:.15}
+  .aurora .a2{width:40vw; height:40vw; top:14vh; right:-10vw; opacity:.12}
+  .aurora .a3{width:34vw; height:34vw; bottom:-14vw; left:30vw; opacity:.11}
+  .aurora .a4{width:30vw; height:30vw; top:30vh; left:38vw; opacity:.10}
+  .aurora .a5{width:36vw; height:36vw; bottom:-8vw; right:6vw; opacity:.11}
+  .aurora .a6{width:26vw; height:26vw; top:-6vw; left:46vw; opacity:.09}
+  a{color:inherit; text-decoration:none}
+  .mono{font-family:"Plus Jakarta Sans",sans-serif}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px}
+  .eyebrow{font-family:"Plus Jakarta Sans",sans-serif; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--text3)}
+  h1,h2,h3{font-family:"Plus Jakarta Sans",sans-serif; font-weight:600; letter-spacing:-.01em; margin:0}
+  .btn{display:inline-flex; align-items:center; gap:8px; font-family:"Plus Jakarta Sans",sans-serif; font-weight:600; font-size:15px; padding:12px 20px; border-radius:10px; cursor:pointer; transition:transform .12s, background .15s, border-color .15s; border:1px solid transparent}
+  .btn:focus-visible{outline:2px solid var(--amber); outline-offset:3px}
+  .btn-primary{background:var(--text); color:#0B0C0F}
+  .btn-primary:hover{transform:translateY(-1px)}
+  .btn-ghost{background:transparent; border-color:var(--line2); color:var(--text)}
+  .btn-ghost:hover{background:var(--surface2)}
+
+  /* nav */
+  nav{position:sticky; top:0; z-index:20; backdrop-filter:blur(10px); background:rgba(11,12,15,.72); border-bottom:1px solid var(--line)}
+  .navin{max-width:var(--maxw); margin:0 auto; padding:13px 28px; display:flex; align-items:center; justify-content:space-between; gap:18px}
+  .brand{display:flex; align-items:center; gap:10px}
+  .mark{width:26px; height:26px; flex:0 0 auto}
+  .brand .name{font-family:"Plus Jakarta Sans",sans-serif; font-weight:600; font-size:17px; letter-spacing:.15em}
+  .navlinks{display:flex; align-items:center; gap:26px}
+  .navlinks a{font-family:"Plus Jakarta Sans",sans-serif; font-size:12.5px; color:var(--text2); letter-spacing:.02em}
+  .navlinks a:hover{color:var(--text)}
+  .navcta{padding:8px 15px; font-size:13.5px}
+  .navlinks a.navcta{color:#0B0C0F; font-family:"Plus Jakarta Sans",sans-serif}
+  @media(max-width:760px){.navlinks a:not(.navcta){display:none}}
+
+  /* hero */
+  .hero{padding:48px 0 128px; min-height:100vh; display:flex; align-items:center}
+  .heroin{display:grid; grid-template-columns:1.15fr .85fr; gap:54px; align-items:center}
+  .hero h1{font-size:62px; line-height:1.02; margin:18px 0 0}
+  .hero .lede{color:var(--text2); font-size:18px; margin:22px 0 0; max-width:34ch}
+  .hero .diff{margin:18px 0 0; font-size:15px; color:var(--text)}
+  .hero .diff b{color:var(--blue); font-weight:600}
+  .triad{display:flex; align-items:center; gap:12px; margin:26px 0 0; font-family:"Plus Jakarta Sans",sans-serif; font-size:13px; letter-spacing:.06em}
+  .triad span{font-weight:500}
+  .triad .f{color:var(--red)} .triad .x{color:var(--blue)} .triad .p{color:var(--amber)}
+  .triad .arr{color:var(--text3)}
+  .triad .f,.triad .x,.triad .p{display:inline-flex; align-items:center; gap:6px}
+  .triad svg{width:14px; height:14px}
+  .herocta{display:flex; gap:12px; margin:30px 0 0; flex-wrap:wrap}
+
+  /* hero passport card */
+  .pcard{background:linear-gradient(180deg,var(--surface),var(--bg2)); border:1px solid var(--line); border-radius:16px; padding:20px; box-shadow:0 24px 60px -30px rgba(0,0,0,.7)}
+  .pcard .extag{display:inline-block; font-family:"Plus Jakarta Sans",sans-serif; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--text3); border:1px solid var(--line); border-radius:999px; padding:3px 9px; margin-bottom:12px}
+  .pcard .ph{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:3px}
+  .pcard .pt{font-family:"Plus Jakarta Sans",sans-serif; font-weight:600; font-size:14px}
+  .badge{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-family:"Plus Jakarta Sans",sans-serif; font-weight:600; font-size:11px; letter-spacing:.05em; background:var(--violet-soft); border:1px solid rgba(169,137,230,.4); color:var(--violet)}
+  .pcard .pid{font-family:"Plus Jakarta Sans",sans-serif; font-size:11px; color:var(--text3); margin-bottom:14px}
+  .step{display:flex; gap:11px; padding:8px 0; border-top:1px solid var(--line)}
+  .step:first-of-type{border-top:0}
+  .step .d{width:8px; height:8px; border-radius:50%; margin-top:6px; flex:0 0 auto}
+  .step.r .d{background:var(--red)} .step.b .d{background:var(--blue)} .step.a .d{background:var(--amber)} .step.h .d{background:var(--violet)} .step.s .d{background:var(--text3)}
+  .step .di{flex:0 0 auto; width:16px; height:16px; margin-top:2px; display:inline-flex; align-items:center; justify-content:center}
+  .step .di svg{width:16px; height:16px}
+  .step.r .di{color:var(--red)} .step.b .di{color:var(--blue)} .step.a .di{color:var(--amber)} .step.h .di{color:var(--violet)}
+  .step .sl{font-family:"Plus Jakarta Sans",sans-serif; font-weight:600; font-size:13px}
+  .step .sd{font-size:12.5px; color:var(--text2)}
+  .step .sd .mono{color:var(--text)}
+  .sealed{display:flex; align-items:center; gap:7px; margin-top:12px; padding-top:12px; border-top:1px solid var(--line); font-family:"Plus Jakarta Sans",sans-serif; font-size:12px; color:var(--text2)}
+  .sealed .ok{color:#6FB585}
+
+  /* section shell */
+  section{padding:74px 0}
+  .shead{max-width:620px; margin:0 0 40px}
+  .shead h2{font-size:38px; line-height:1.08; margin:12px 0 0}
+  .shead p{color:var(--text2); font-size:17px; margin:16px 0 0}
+
+  /* agents */
+  .agrid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+  .acard{background:var(--surface); border:1px solid var(--line); border-top:2px solid var(--text3); border-radius:14px; padding:24px 22px}
+  .acard.red{border-top-color:var(--red)} .acard.blue{border-top-color:var(--blue)} .acard.amber{border-top-color:var(--amber)}
+  .acard .role{font-family:"Plus Jakarta Sans",sans-serif; font-size:11px; letter-spacing:.16em; text-transform:uppercase}
+  .acard.red .role{color:var(--red)} .acard.blue .role{color:var(--blue)} .acard.amber .role{color:var(--amber)}
+  .acard h3{font-size:21px; margin:9px 0 0}
+  .acard .ad{color:var(--text2); font-size:14.5px; margin:12px 0 16px}
+  .acard ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px}
+  .acard li{font-size:13.5px; color:var(--text2); padding-left:18px; position:relative}
+  .acard li::before{content:""; position:absolute; left:0; top:8px; width:5px; height:5px; border-radius:50%; background:var(--text3)}
+  .acard.red li::before{background:var(--red)} .acard.blue li::before{background:var(--blue)} .acard.amber li::before{background:var(--amber)}
+  .humannote{margin-top:18px; display:flex; align-items:flex-start; gap:12px; background:var(--surface2); border:1px solid var(--line); border-left:2px solid var(--violet); border-radius:12px; padding:16px 18px}
+  .humannote .hl{font-family:"Plus Jakarta Sans",sans-serif; font-weight:600; font-size:14px; color:var(--violet)}
+  .humannote .ht{font-size:13.5px; color:var(--text2)}
+  .acard .aicon{width:42px; height:42px; border-radius:11px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); margin-bottom:16px}
+  .acard .aicon svg{width:23px; height:23px}
+  .acard.red .aicon{background:var(--red-soft); color:var(--red); border-color:rgba(235,90,82,.28)}
+  .acard.blue .aicon{background:var(--blue-soft); color:var(--blue); border-color:rgba(94,160,224,.28)}
+  .acard.amber .aicon{background:var(--amber-soft); color:var(--amber); border-color:rgba(227,162,62,.28)}
+  .humannote .hicon{flex:0 0 auto; width:34px; height:34px; border-radius:9px; display:inline-flex; align-items:center; justify-content:center; background:var(--violet-soft); color:var(--violet); border:1px solid rgba(169,137,230,.28)}
+  .humannote .hicon svg{width:19px; height:19px}
+
+  /* steps */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+  .stepc{background:var(--bg2); padding:24px 22px}
+  .stepc .no{font-family:"Plus Jakarta Sans",sans-serif; font-size:12px; color:var(--text3); letter-spacing:.1em}
+  .stepc h3{font-size:17px; margin:10px 0 0}
+  .stepc p{color:var(--text2); font-size:13.5px; margin:9px 0 0}
+  .stepc .t{font-family:"Plus Jakarta Sans",sans-serif; font-size:11px; color:var(--amber); margin-top:12px; display:block}
+  .stepc{--ac:var(--text2)}
+  .stepc.red{--ac:var(--red)} .stepc.blue{--ac:var(--blue)} .stepc.amber{--ac:var(--amber)} .stepc.violet{--ac:var(--violet)} .stepc.seal{--ac:#6FB585}
+  .stepc .sicon{color:var(--ac); width:26px; height:26px; display:block; margin-bottom:13px}
+  .stepc .sicon svg{width:26px; height:26px}
+  .stepc .no{color:var(--ac)}
+  .stepc .t{color:var(--text3)}
+
+  /* proof */
+  .proof{background:linear-gradient(180deg,var(--bg2),var(--bg)); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .proofin{display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center}
+  .proof h2{font-size:38px; line-height:1.08}
+  .proof p{color:var(--text2); font-size:17px; margin:18px 0 0}
+  .proof .pb{margin-top:18px; font-size:15px; color:var(--text)}
+  .chainviz{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px}
+  .cvrow{display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-top:1px solid var(--line); font-family:"Plus Jakarta Sans",sans-serif; font-size:13px}
+  .cvrow:first-child{border-top:0}
+  .cvrow .k{color:var(--text3)} .cvrow .v{color:var(--text)}
+  .state{display:flex; gap:10px; margin-top:16px}
+  .pillstate{flex:1; text-align:center; padding:12px; border-radius:10px; font-family:"Plus Jakarta Sans",sans-serif; font-size:12px; border:1px solid var(--line)}
+  .pillstate.ok{background:rgba(111,181,133,.1); border-color:rgba(111,181,133,.4); color:#7FBF95}
+  .pillstate.bad{background:var(--red-soft); border-color:rgba(235,90,82,.4); color:var(--red)}
+
+  /* tech stack — logo wall */
+  .logowall{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  .logo{display:flex; align-items:center; gap:13px; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; font-family:"Plus Jakarta Sans",sans-serif; font-weight:500; font-size:15px; color:var(--text2); transition:border-color .2s, color .2s}
+  .logo:hover{border-color:var(--line2); color:var(--text)}
+  .logo img, .logo .gly, .logo .blogo{width:26px; height:26px; flex:0 0 auto; opacity:1}
+  .logo .gly, .logo .blogo{color:#E7E9EC}
+
+  /* trust band */
+  .band{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--bg2)}
+  .bandin{display:flex; flex-wrap:wrap; gap:14px 40px; justify-content:center; padding:26px 28px; max-width:var(--maxw); margin:0 auto; font-family:"Plus Jakarta Sans",sans-serif; font-size:13px; color:var(--text2)}
+  .bandin span{display:inline-flex; align-items:center; gap:9px}
+  .bandin b{color:var(--text); font-weight:500}
+
+  /* final cta */
+  .final{text-align:center; padding:92px 0}
+  .final h2{font-size:44px; line-height:1.05}
+  .final p{color:var(--text2); font-size:18px; margin:18px auto 0; max-width:46ch}
+  .finalcta{display:flex; gap:12px; justify-content:center; margin-top:30px; flex-wrap:wrap}
+
+  /* footer */
+  footer{border-top:1px solid var(--line); padding:44px 0 38px}
+  .footin{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:30px}
+  .footbrand .name{font-family:"Plus Jakarta Sans",sans-serif; font-weight:600; font-size:16px; letter-spacing:.14em}
+  .footbrand p{color:var(--text3); font-size:13px; margin:12px 0 0; max-width:30ch}
+  .footbrand .fp{font-family:"Plus Jakarta Sans",sans-serif; font-size:12px; margin-top:14px}
+  .footbrand .fp .f{color:var(--red)} .footbrand .fp .x{color:var(--blue)} .footbrand .fp .p{color:var(--amber)} .footbrand .fp .arr{color:var(--text3)}
+  .footbrand .fp .f,.footbrand .fp .x,.footbrand .fp .p{display:inline-flex; align-items:center; gap:5px}
+  .footbrand .fp svg{width:12px; height:12px}
+  .fcol h4{font-family:"Plus Jakarta Sans",sans-serif; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--text3); margin:0 0 14px; font-weight:400}
+  .fcol a, .fcol span{display:block; font-size:13.5px; color:var(--text2); margin-bottom:10px}
+  .fcol a:hover{color:var(--text)}
+  .foot-base{max-width:var(--maxw); margin:34px auto 0; padding:18px 28px 0; border-top:1px solid var(--line); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:"Plus Jakarta Sans",sans-serif; font-size:11.5px; color:var(--text3)}
+
+  @keyframes up{from{opacity:0; transform:translateY(14px)}to{opacity:1; transform:translateY(0)}}
+  @keyframes drift1{from{transform:translate(0,0) scale(1)}to{transform:translate(16vw,14vh) scale(1.18)}}
+  @keyframes drift2{from{transform:translate(0,0) scale(1)}to{transform:translate(-15vw,18vh) scale(.85)}}
+  @keyframes drift3{from{transform:translate(0,0) scale(1)}to{transform:translate(13vw,-12vh) scale(1.12)}}
+  @keyframes drift4{from{transform:translate(0,0) scale(1)}to{transform:translate(-14vw,-10vh) scale(1.15)}}
+  @keyframes drift5{from{transform:translate(0,0) scale(1)}to{transform:translate(10vw,16vh) scale(.9)}}
+  @keyframes drift6{from{transform:translate(0,0) scale(1)}to{transform:translate(-12vw,12vh) scale(1.2)}}
+  @media (prefers-reduced-motion: no-preference){
+    .rise{animation:up .6s ease-out both}
+    .aurora .a1{animation:drift1 28s ease-in-out infinite alternate}
+    .aurora .a2{animation:drift2 34s ease-in-out infinite alternate}
+    .aurora .a3{animation:drift3 40s ease-in-out infinite alternate}
+    .aurora .a4{animation:drift4 31s ease-in-out infinite alternate}
+    .aurora .a5{animation:drift5 37s ease-in-out infinite alternate}
+    .aurora .a6{animation:drift6 44s ease-in-out infinite alternate}
+  }
+
+  @media(max-width:880px){
+    .hero{min-height:auto; display:block; padding:72px 0 56px}
+    .heroin{grid-template-columns:1fr; gap:40px}
+    .hero h1{font-size:46px}
+    .agrid{grid-template-columns:1fr}
+    .logowall{grid-template-columns:1fr 1fr}
+    .steps{grid-template-columns:1fr}
+    .proofin{grid-template-columns:1fr; gap:30px}
+    .footin{grid-template-columns:1fr 1fr; gap:26px}
+    section{padding:56px 0}
+  }
+  @media(max-width:480px){
+    .wrap{padding:0 18px} .navin{padding:13px 18px}
+    .hero{padding:56px 0 40px} .hero h1{font-size:38px}
+    .final h2{font-size:32px}
+    .logowall{grid-template-columns:1fr}
+    .footin{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span><span class="a4"></span><span class="a5"></span><span class="a6"></span></div>
+
+<nav id="navbar">
+  <div class="navin">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M16 3.5 27 9.75v12.5L16 28.5 5 22.25V9.75L16 3.5Z" stroke="#ECEEF1" stroke-width="1.6"/>
+        <path d="M16 10.5 21.5 13.6v6.8L16 23.5l-5.5-3.1v-6.8L16 10.5Z" fill="rgba(236,238,241,.10)" stroke="#ECEEF1" stroke-width="1.2"/>
+        <circle cx="16" cy="16" r="1.7" fill="#ECEEF1"/>
+      </svg>
+      <span class="name">CRUCIBLE</span>
+    </div>
+    <div class="navlinks">
+      <a href="#agents">The Agents</a>
+      <a href="#how">How It Works</a>
+      <a href="#proof">Proof</a>
+      <a href="#start" class="btn btn-primary navcta">Harden a document</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap heroin">
+    <div class="rise">
+      <span class="eyebrow">Adversarial document hardening</span>
+      <h1>Break it before reality does.</h1>
+      <p class="lede">Crucible turns three adversarial AI agents loose on your most dangerous documents — incident runbooks, security policies, clinical order sets — then seals every step in a tamper-proof record.</p>
+      <p class="diff">Most tools flag problems and stop. <b>Crucible fixes them — and proves it.</b></p>
+      <div class="triad">
+        <span class="f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="1.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22.5" y2="12"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>Find</span><span class="arr">→</span><span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 4.5 5.5v6c0 4.5 3.2 7.7 7.5 9.5 4.3-1.8 7.5-5 7.5-9.5v-6L12 2.5Z"/><path d="m8.8 12.2 2.2 2.2 4.4-4.6"/></svg>Fix</span><span class="arr">→</span><span class="p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>Prove</span>
+      </div>
+      <div class="herocta">
+        <a href="#start" class="btn btn-primary">Harden a document →</a>
+        <a href="#how" class="btn btn-ghost">See how it works ↓</a>
+      </div>
+    </div>
+
+    <div class="rise pcard" aria-label="Hardening Passport preview">
+      <div class="extag">Example · Incident response</div>
+      <div class="ph">
+        <span class="pt">Hardening Passport</span>
+        <span class="badge">✓ HUMAN-APPROVED</span>
+      </div>
+      <div class="pid mono">Incident runbook — Database outage</div>
+      <div class="step r"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="1.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22.5" y2="12"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></span><div><div class="sl">Adversarial review</div><div class="sd">Critical risk found</div></div></div>
+      <div class="step b"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 4.5 5.5v6c0 4.5 3.2 7.7 7.5 9.5 4.3-1.8 7.5-5 7.5-9.5v-6L12 2.5Z"/><path d="m8.8 12.2 2.2 2.2 4.4-4.6"/></svg></span><div><div class="sl">Hardened</div><div class="sd">Rewritten to a safe version</div></div></div>
+      <div class="step a"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><div><div class="sl">Adjudicated</div><div class="sd"><span class="mono">85/100</span> · escalated</div></div></div>
+      <div class="step h"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg></span><div><div class="sl">Human sign-off</div><div class="sd">Approved by an on-call lead</div></div></div>
+      <div class="sealed"><span class="ok">✓</span> Sealed · 42 entries · <span class="mono">12241517f6…d4a</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="agents">
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">The adversarial board</span>
+      <h2>Three agents. One hardened document.</h2>
+      <p>Each plays a role most review tools skip — and together they don't just judge your document, they repair it until it holds.</p>
+    </div>
+    <div class="agrid">
+      <div class="acard red">
+        <div class="aicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="1.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22.5" y2="12"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></div>
+        <div class="role">Red · The Adversary</div>
+        <h3>Attacks it.</h3>
+        <p class="ad">Reads your document like an attacker would, hunting for the failure that ends up in a postmortem.</p>
+        <ul>
+          <li>Finds unsafe steps and failure modes</li>
+          <li>Rates each finding Critical / High / Medium</li>
+          <li>Re-attacks every revision until nothing's left</li>
+        </ul>
+      </div>
+      <div class="acard blue">
+        <div class="aicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 4.5 5.5v6c0 4.5 3.2 7.7 7.5 9.5 4.3-1.8 7.5-5 7.5-9.5v-6L12 2.5Z"/><path d="m8.8 12.2 2.2 2.2 4.4-4.6"/></svg></div>
+        <div class="role">Blue · The Defender</div>
+        <h3>Fixes it.</h3>
+        <p class="ad">Doesn't just point at problems — rewrites the document into a hardened version that closes them.</p>
+        <ul>
+          <li>Turns flaws into safe, specific steps</li>
+          <li>Adds the missing safeguards and checks</li>
+          <li>Hands back a deployable document, not a report</li>
+        </ul>
+      </div>
+      <div class="acard amber">
+        <div class="aicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
+        <div class="role">Arbiter · The Judge</div>
+        <h3>Decides.</h3>
+        <p class="ad">Scores the result and rules on it: ship it, run another round, or escalate to a human.</p>
+        <ul>
+          <li>Scores every round 0–100</li>
+          <li>Forces another round until it's safe</li>
+          <li>Escalates high-stakes calls to a person</li>
+        </ul>
+      </div>
+    </div>
+    <div class="humannote">
+      <span class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg></span>
+      <span class="hl">+ You</span>
+      <span class="ht">A human always holds the final call. On high-stakes documents, Crucible escalates to a person to approve, reject, or add context — and that decision is sealed into the record too.</span>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">How it works</span>
+      <h2>From flawed draft to sealed proof.</h2>
+      <p>A fully traceable adversarial process, with a human in the loop and an un-fakeable record at the end.</p>
+    </div>
+    <div class="steps">
+      <div class="stepc"><span class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H7A2 2 0 0 0 5 4.5v15a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7.5z"/><path d="M14 2.5v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg></span><span class="no">STEP 01</span><h3>Submit</h3><p>Paste or upload your document — or load a demo to see it run.</p><span class="t">~ instant</span></div>
+      <div class="stepc red"><span class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="1.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22.5" y2="12"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></span><span class="no">STEP 02</span><h3>Red attacks</h3><p>Finds every flaw and rates it by severity, round after round.</p><span class="t">~ seconds</span></div>
+      <div class="stepc blue"><span class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 4.5 5.5v6c0 4.5 3.2 7.7 7.5 9.5 4.3-1.8 7.5-5 7.5-9.5v-6L12 2.5Z"/><path d="m8.8 12.2 2.2 2.2 4.4-4.6"/></svg></span><span class="no">STEP 03</span><h3>Blue hardens</h3><p>Rewrites the document into a safer version that closes the gaps.</p><span class="t">~ seconds</span></div>
+      <div class="stepc amber"><span class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><span class="no">STEP 04</span><h3>Arbiter judges</h3><p>Scores it and sends it back for another round until it holds.</p><span class="t">~ seconds</span></div>
+      <div class="stepc violet"><span class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg></span><span class="no">STEP 05</span><h3>Human signs off</h3><p>A person approves, rejects, or adds context on high-stakes calls.</p><span class="t">human-in-the-loop</span></div>
+      <div class="stepc seal"><span class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="11" width="15" height="9.5" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/></svg></span><span class="no">STEP 06</span><h3>Sealed</h3><p>Every step locked into a tamper-evident chain you can verify.</p><span class="t">~ instant</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="proof" class="proof">
+  <div class="wrap proofin">
+    <div>
+      <span class="eyebrow">Tamper-evident by design</span>
+      <h2>Proof you can break.</h2>
+      <p>Every attack, fix, score, and sign-off is sealed into a hash chain. Change one character of the record and verification fails instantly — restore it, and it passes again.</p>
+      <p class="pb">It's not a claim on a slide. Break it live, on stage.</p>
+    </div>
+    <div class="chainviz" aria-label="Tamper-evident ledger">
+      <div class="cvrow"><span class="k">Entries</span><span class="v">42</span></div>
+      <div class="cvrow"><span class="k">Head hash</span><span class="v">12241517f6…d4a</span></div>
+      <div class="cvrow"><span class="k">Every step</span><span class="v">sealed &amp; linked</span></div>
+      <div class="state">
+        <div class="pillstate ok">✓ chain intact</div>
+        <div class="pillstate bad">✗ chain BROKEN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">Built with</span>
+      <h2>Under the hood.</h2>
+      <p>The agents run on Band, powered by Featherless. The Arena is a Next.js app with Supabase, deployed on Vercel — and every step is sealed with a SHA-256 hash chain.</p>
+    </div>
+    <div class="logowall">
+      <div class="logo"><svg class="blogo" viewBox="0 0 144 144" fill="none" aria-hidden="true"><path d="M70.206 0.0919995C73.559 -0.204 77.838 0.2718 81.148 0.7039C94.893 2.3764 107.79 7.768 118.205 16.1955C133.467 28.5365 142.702 46.0074 143.833 64.68C145.167 83.082 138.46 101.212 125.203 115.038C117.458 123.253 107.638 129.589 96.608 133.486C89.094 136.166 82.374 137.304 74.336 137.765C56.543 138.158 39.2466 132.341 25.9176 121.481C15.8501 113.352 8.27011 102.937 3.93171 91.273C-8.30979 57.318 8.8634 20.2914 43.9221 5.5715C52.369 2.0251 61.019 0.5543 70.206 0.0919995Z" fill="#00171F"/><path d="M68.824 5.36672C73.939 4.78522 80.288 5.66482 85.274 6.56382C95.992 8.49622 105.368 12.8547 113.761 19.2552C143.129 41.6537 147.341 82.992 122.97 110.015C111.046 123.258 95.548 130.859 76.925 132.502C59.913 133.422 43.196 128.11 30.4126 117.72C22.8638 111.692 17.1233 104.6 12.8535 96.276C-7.31448 56.96 20.6029 8.52672 68.824 5.36672Z" fill="url(#paint0_band)"/><path d="M79.27 16.638C106.78 15.2657 130.193 36.4538 131.565 63.963C132.937 91.472 111.749 114.885 84.24 116.257C56.731 117.629 33.3182 96.441 31.9459 68.932C30.5736 41.4232 51.7616 18.0105 79.27 16.638Z" fill="#00171F"/><path d="M66.1321 47.0815C68.8511 46.9275 70.5041 47.0562 72.6781 48.9438C77.0681 52.755 78.6851 58.793 79.0501 64.377C79.4691 70.811 78.5621 78.72 74.1191 83.743C72.5301 85.54 71.1691 86.746 68.7541 86.931C67.4301 87.216 64.9681 86.885 63.8801 86.148C56.4071 81.084 54.7161 68.471 56.5261 60.412C57.7271 55.067 60.5621 48.5532 66.1321 47.0815Z" fill="#36EFFF"/><path d="M109.74 48.6211C121.222 47.7262 123.67 81.288 110.979 84.839C99.251 84.913 97.518 52.63 109.74 48.6211Z" fill="#36EFFF"/><defs><linearGradient id="paint0_band" x1="72.529" y1="5.17972" x2="72.529" y2="132.604" gradientUnits="userSpaceOnUse"><stop stop-color="#77E877"/><stop offset="1" stop-color="#00CE7C"/></linearGradient></defs></svg>Band</div>
+      <div class="logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAABtUlEQVR4nJXVvWpUQRgG4OdsYlyLYGFn7Q14BWLwr1FTJLFRKwW9n4AggmAKFTTNCppcQG5FBCVgIFlkk7WYmd3ZyZyzm7eZMz/v+/3M981pfv76DQ3GAvLvNmzhNl43UaCGKziJ330M43cu3vQqxH4cT7K1Id7WPFuuCAyL+X38aHOzJpBwF/sd+6AWAnxfhNwlcG8Ob4hN2kNoE/6LpxikhVxgCacdVjfxpVhbTpY28KaFuCMUV0mGURJ4hJf4HOdnQh1s4HmL8CrTWI/juCUUSw/v8bWF3OAoF7hUOXSjQko4joZWk8C1isCfYj7GbhxTuR+lW6h1VPJqBbewV3iBaQgv8K2ytyYkc79GhrKd3+GqkP1F0JSV+AqjaLV//vwMdjlfyqPo6soc8gMhJ3qVw6kOangYDeylhR7+zbEG25GYJ7phGsInIeb1CvkODoq1SeMlgSdxHJs2zY72Pph0bYo1fwfTFXY9dxMkgcuLHO4SqFXZ6CICHyt71y8i8Ex4VD5kewdCtjuREnUqPJQDoRce46buN3LGgxzrwq3M+8HOCJRXNtbSviUSscz4AIeLCPwH2MVUM0M0R+gAAAAASUVORK5CYII=" alt="Featherless" style="height:24px;width:auto">Featherless</div>
+      <div class="logo"><svg class="blogo" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.665 21.978C16.758 23.255 14.465 24 12 24 5.377 24 0 18.623 0 12S5.377 0 12 0s12 5.377 12 12c0 3.583-1.574 6.801-4.067 9.001L9.219 7.2H7.2v9.596h1.615V9.251l9.85 12.727Zm-3.332-8.533 1.6 2.061V7.2h-1.6v6.245Z"/></svg>Next.js</div>
+      <div class="logo"><svg class="blogo" viewBox="0 0 128 128" aria-hidden="true"><g fill="#61DAFB"><circle cx="64" cy="64" r="11.4"/><path d="M107.3 45.2c-2.2-.8-4.5-1.6-6.9-2.3.6-2.4 1.1-4.8 1.5-7.1 2.1-13.2-.2-22.5-6.6-26.1-1.9-1.1-4-1.6-6.4-1.6-7 0-15.9 5.2-24.9 13.9-9-8.7-17.9-13.9-24.9-13.9-2.4 0-4.5.5-6.4 1.6-6.4 3.7-8.7 13-6.6 26.1.4 2.3.9 4.7 1.5 7.1-2.4.7-4.7 1.4-6.9 2.3C8.2 50 1.4 56.6 1.4 64s6.9 14 19.3 18.8c2.2.8 4.5 1.6 6.9 2.3-.6 2.4-1.1 4.8-1.5 7.1-2.1 13.2.2 22.5 6.6 26.1 1.9 1.1 4 1.6 6.4 1.6 7.1 0 16-5.2 24.9-13.9 9 8.7 17.9 13.9 24.9 13.9 2.4 0 4.5-.5 6.4-1.6 6.4-3.7 8.7-13 6.6-26.1-.4-2.3-.9-4.7-1.5-7.1 2.4-.7 4.7-1.4 6.9-2.3 12.5-4.8 19.3-11.4 19.3-18.8s-6.8-14-19.3-18.8zM92.5 14.7c4.1 2.4 5.5 9.8 3.8 20.3-.3 2.1-.8 4.3-1.4 6.6-5.2-1.2-10.7-2-16.5-2.5-3.4-4.8-6.9-9.1-10.4-13 7.4-7.3 14.9-12.3 21-12.3 1.3 0 2.5.3 3.5.9zM81.3 74c-1.8 3.2-3.9 6.4-6.1 9.6-3.7.3-7.4.4-11.2.4-3.9 0-7.6-.1-11.2-.4-2.2-3.2-4.2-6.4-6-9.6-1.9-3.3-3.7-6.7-5.3-10 1.6-3.3 3.4-6.7 5.3-10 1.8-3.2 3.9-6.4 6.1-9.6 3.7-.3 7.4-.4 11.2-.4 3.9 0 7.6.1 11.2.4 2.2 3.2 4.2 6.4 6 9.6 1.9 3.3 3.7 6.7 5.3 10-1.7 3.3-3.4 6.6-5.3 10zm8.3-3.3c1.5 3.5 2.7 6.9 3.8 10.3-3.4.8-7 1.4-10.8 1.9 1.2-1.9 2.5-3.9 3.6-6 1.2-2.1 2.3-4.2 3.4-6.2zM64 97.8c-2.4-2.6-4.7-5.4-6.9-8.3 2.3.1 4.6.2 6.9.2 2.3 0 4.6-.1 6.9-.2-2.2 2.9-4.5 5.7-6.9 8.3zm-18.6-15c-3.8-.5-7.4-1.1-10.8-1.9 1.1-3.3 2.3-6.8 3.8-10.3 1.1 2 2.2 4.1 3.4 6.1 1.2 2.2 2.4 4.1 3.6 6.1zm-7-25.5c-1.5-3.5-2.7-6.9-3.8-10.3 3.4-.8 7-1.4 10.8-1.9-1.2 1.9-2.5 3.9-3.6 6-1.2 2.1-2.3 4.2-3.4 6.2zM64 30.2c2.4 2.6 4.7 5.4 6.9 8.3-2.3-.1-4.6-.2-6.9-.2-2.3 0-4.6.1-6.9.2 2.2-2.9 4.5-5.7 6.9-8.3zm22.2 21l-3.6-6c3.8.5 7.4 1.1 10.8 1.9-1.1 3.3-2.3 6.8-3.8 10.3-1.1-2.1-2.2-4.2-3.4-6.2zM31.7 35c-1.7-10.5-.3-17.9 3.8-20.3 1-.6 2.2-.9 3.5-.9 6 0 13.5 4.9 21 12.3-3.5 3.8-7 8.2-10.4 13-5.8.5-11.3 1.4-16.5 2.5-.6-2.3-1-4.5-1.4-6.6zM7 64c0-4.7 5.7-9.7 15.7-13.4 2-.8 4.2-1.5 6.4-2.1 1.6 5 3.6 10.3 6 15.6-2.4 5.3-4.5 10.5-6 15.5C15.3 75.6 7 69.6 7 64zm28.5 49.3c-4.1-2.4-5.5-9.8-3.8-20.3.3-2.1.8-4.3 1.4-6.6 5.2 1.2 10.7 2 16.5 2.5 3.4 4.8 6.9 9.1 10.4 13-7.4 7.3-14.9 12.3-21 12.3-1.3 0-2.5-.3-3.5-.9zM96.3 93c1.7 10.5.3 17.9-3.8 20.3-1 .6-2.2.9-3.5.9-6 0-13.5-4.9-21-12.3 3.5-3.8 7-8.2 10.4-13 5.8-.5 11.3-1.4 16.5-2.5.6 2.3 1 4.5 1.4 6.6zm9-15.6c-2 .8-4.2 1.5-6.4 2.1-1.6-5-3.6-10.3-6-15.6 2.4-5.3 4.5-10.5 6-15.5 13.8 4 22.1 10 22.1 15.6 0 4.7-5.8 9.7-15.7 13.4z"/></g></svg>React</div>
+      <div class="logo"><svg class="blogo" viewBox="0 0 128 128" aria-hidden="true"><path fill="#fff" d="M22.67 47h99.67v73.67H22.67z"/><path data-name="original" fill="#007acc" d="M1.5 63.91v62.5h125v-125H1.5zm100.73-5a15.56 15.56 0 017.82 4.5 20.58 20.58 0 013 4c0 .16-5.4 3.81-8.69 5.85-.12.08-.6-.44-1.13-1.23a7.09 7.09 0 00-5.87-3.53c-3.79-.26-6.23 1.73-6.21 5a4.58 4.58 0 00.54 2.34c.83 1.73 2.38 2.76 7.24 4.86 8.95 3.85 12.78 6.39 15.16 10 2.66 4 3.25 10.46 1.45 15.24-2 5.2-6.9 8.73-13.83 9.9a38.32 38.32 0 01-9.52-.1 23 23 0 01-12.72-6.63c-1.15-1.27-3.39-4.58-3.25-4.82a9.34 9.34 0 011.15-.73L82 101l3.59-2.08.75 1.11a16.78 16.78 0 004.74 4.54c4 2.1 9.46 1.81 12.16-.62a5.43 5.43 0 00.69-6.92c-1-1.39-3-2.56-8.59-5-6.45-2.78-9.23-4.5-11.77-7.24a16.48 16.48 0 01-3.43-6.25 25 25 0 01-.22-8c1.33-6.23 6-10.58 12.82-11.87a31.66 31.66 0 019.49.26zm-29.34 5.24v5.12H56.66v46.23H45.15V69.26H28.88v-5a49.19 49.19 0 01.12-5.17C29.08 59 39 59 51 59h21.83z"/></svg>TypeScript</div>
+      <div class="logo"><svg class="blogo" viewBox="0 0 128 128" aria-hidden="true"><path d="M64.004 25.602c-17.067 0-27.73 8.53-32 25.597 6.398-8.531 13.867-11.73 22.398-9.597 4.871 1.214 8.352 4.746 12.207 8.66C72.883 56.629 80.145 64 96.004 64c17.066 0 27.73-8.531 32-25.602-6.399 8.536-13.867 11.735-22.399 9.602-4.87-1.215-8.347-4.746-12.207-8.66-6.27-6.367-13.53-13.738-29.394-13.738zM32.004 64c-17.066 0-27.73 8.531-32 25.602C6.402 81.066 13.87 77.867 22.402 80c4.871 1.215 8.352 4.746 12.207 8.66 6.274 6.367 13.536 13.738 29.395 13.738 17.066 0 27.73-8.53 32-25.597-6.399 8.531-13.867 11.73-22.399 9.597-4.87-1.214-8.347-4.746-12.207-8.66C55.128 71.371 47.868 64 32.004 64zm0 0" fill="#38bdf8"/></svg>Tailwind CSS</div>
+      <div class="logo"><svg class="blogo" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 1.608 12 20.784H0Z"/></svg>Vercel</div>
+      <div class="logo"><svg class="blogo" viewBox="0 0 128 128" aria-hidden="true"><defs><linearGradient id="a" x1="53.974" x2="94.163" y1="54.974" y2="71.829" gradientTransform="translate(29.387 60.096) scale(1.1436)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#249361"/><stop offset="1" stop-color="#3ecf8e"/></linearGradient><linearGradient id="b" x1="36.156" x2="54.484" y1="30.578" y2="65.081" gradientTransform="translate(29.387 60.096) scale(1.1436)" gradientUnits="userSpaceOnUse"><stop offset="0"/><stop offset="1" stop-opacity="0"/></linearGradient></defs><path fill="url(#a)" d="M102.24 186.21c-3.267 4.117-9.904 1.862-9.977-3.397l-1.156-76.906h51.715c9.365 0 14.587 10.817 8.763 18.149z" transform="translate(-27.722 -60.338)"/><path fill="url(#b)" fill-opacity=".2" d="M102.24 186.21c-3.267 4.117-9.904 1.862-9.977-3.397l-1.156-76.906h51.715c9.365 0 14.587 10.817 8.763 18.149z" transform="translate(-27.722 -60.338)"/><path fill="#3ecf8e" d="M53.484 2.128c3.267-4.117 9.905-1.862 9.977 3.396l.508 76.907H12.902c-9.365 0-14.587-10.817-8.764-18.149z"/></svg>Supabase</div>
+      <div class="logo"><svg class="blogo" viewBox="0 0 128 128" aria-hidden="true"><linearGradient id="python-original-a" gradientUnits="userSpaceOnUse" x1="70.252" y1="1237.476" x2="170.659" y2="1151.089" gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)"><stop offset="0" stop-color="#5A9FD4"/><stop offset="1" stop-color="#306998"/></linearGradient><linearGradient id="python-original-b" gradientUnits="userSpaceOnUse" x1="209.474" y1="1098.811" x2="173.62" y2="1149.537" gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)"><stop offset="0" stop-color="#FFD43B"/><stop offset="1" stop-color="#FFE873"/></linearGradient><path fill="url(#python-original-a)" d="M63.391 1.988c-4.222.02-8.252.379-11.8 1.007-10.45 1.846-12.346 5.71-12.346 12.837v9.411h24.693v3.137H29.977c-7.176 0-13.46 4.313-15.426 12.521-2.268 9.405-2.368 15.275 0 25.096 1.755 7.311 5.947 12.519 13.124 12.519h8.491V67.234c0-8.151 7.051-15.34 15.426-15.34h24.665c6.866 0 12.346-5.654 12.346-12.548V15.833c0-6.693-5.646-11.72-12.346-12.837-4.244-.706-8.645-1.027-12.866-1.008zM50.037 9.557c2.55 0 4.634 2.117 4.634 4.721 0 2.593-2.083 4.69-4.634 4.69-2.56 0-4.633-2.097-4.633-4.69-.001-2.604 2.073-4.721 4.633-4.721z" transform="translate(0 10.26)"/><path fill="url(#python-original-b)" d="M91.682 28.38v10.966c0 8.5-7.208 15.655-15.426 15.655H51.591c-6.756 0-12.346 5.783-12.346 12.549v23.515c0 6.691 5.818 10.628 12.346 12.547 7.816 2.297 15.312 2.713 24.665 0 6.216-1.801 12.346-5.423 12.346-12.547v-9.412H63.938v-3.138h37.012c7.176 0 9.852-5.005 12.348-12.519 2.578-7.735 2.467-15.174 0-25.096-1.774-7.145-5.161-12.521-12.348-12.521h-9.268zM77.809 87.927c2.561 0 4.634 2.097 4.634 4.692 0 2.602-2.074 4.719-4.634 4.719-2.55 0-4.633-2.117-4.633-4.719 0-2.595 2.083-4.692 4.633-4.692z" transform="translate(0 10.26)"/><radialGradient id="python-original-c" cx="1825.678" cy="444.45" r="26.743" gradientTransform="matrix(0 -.24 -1.055 0 532.979 557.576)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#B8B8B8" stop-opacity=".498"/><stop offset="1" stop-color="#7F7F7F" stop-opacity="0"/></radialGradient><path opacity=".444" fill="url(#python-original-c)" d="M97.309 119.597c0 3.543-14.816 6.416-33.091 6.416-18.276 0-33.092-2.873-33.092-6.416 0-3.544 14.815-6.417 33.092-6.417 18.275 0 33.091 2.872 33.091 6.417z"/></svg>Python</div>
+    </div>
+  </div>
+</section>
+
+<div class="band">
+  <div class="bandin">
+    <span><b>3</b> adversarial agents</span>
+    <span><b>Every</b> step sealed</span>
+    <span><b>Human</b> in the loop</span>
+    <span>Runbooks · policies · contracts · order sets</span>
+  </div>
+</div>
+
+<section id="start" class="final">
+  <div class="wrap">
+    <span class="eyebrow">Try it</span>
+    <h2>Harden your first document.</h2>
+    <p>Load the demo and watch Red, Blue, and Arbiter go to work — then verify the sealed record yourself.</p>
+    <div class="finalcta">
+      <a href="#" class="btn btn-primary">Try the demo →</a>
+      <a href="#" class="btn btn-ghost">Open the Arena</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footin">
+    <div class="footbrand">
+      <div class="name">CRUCIBLE</div>
+      <p>The adversarial hardening desk for high-stakes documents.</p>
+      <div class="fp"><span class="f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="1.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22.5" y2="12"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>Find</span> <span class="arr">→</span> <span class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 4.5 5.5v6c0 4.5 3.2 7.7 7.5 9.5 4.3-1.8 7.5-5 7.5-9.5v-6L12 2.5Z"/><path d="m8.8 12.2 2.2 2.2 4.4-4.6"/></svg>Fix</span> <span class="arr">→</span> <span class="p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>Prove</span></div>
+    </div>
+    <div class="fcol">
+      <h4>Product</h4>
+      <a href="#agents">The Agents</a>
+      <a href="#how">How It Works</a>
+      <a href="#proof">Proof</a>
+      <a href="#start">Start</a>
+    </div>
+    <div class="fcol">
+      <h4>Built on</h4>
+      <span>Band multi-agent orchestration</span>
+      <span>Tamper-evident hash chain</span>
+      <span>Human-in-the-loop sign-off</span>
+    </div>
+    <div class="fcol">
+      <h4>For</h4>
+      <span>Incident response</span>
+      <span>Security &amp; compliance</span>
+      <span>Healthcare order sets</span>
+    </div>
+  </div>
+  <div class="foot-base">
+    <span>© 2026 Crucible · Adversarial hardening desk</span>
+    <span>Band of Agents Hackathon · Track 3 — Regulated &amp; High-Stakes Workflows</span>
+  </div>
+</footer>
+
+</body>
+</html>

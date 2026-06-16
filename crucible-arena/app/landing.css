@@ -1,0 +1,1449 @@
+/* Crucible marketing landing — ported from crucible-landing.html.
+   EVERY rule is scoped under the unique `.landing` wrapper so it cannot leak
+   into or affect the /arena dashboard (which never renders `.landing`). Fonts
+   reuse the next/font CSS variables already set on <html> by layout.tsx. */
+
+.landing {
+  /* palette + tokens (scoped to the wrapper) */
+  --bg: #0b0c0f;
+  --bg2: #0f1115;
+  --surface: #14161b;
+  --surface2: #1a1d23;
+  --line: rgba(255, 255, 255, 0.08);
+  --line2: rgba(255, 255, 255, 0.14);
+  --text: #eceef1;
+  --text2: #9da0a8;
+  --text3: #63666f;
+  --red: #eb5a52;
+  --red-soft: rgba(235, 90, 82, 0.13);
+  --blue: #5ea0e0;
+  --blue-soft: rgba(94, 160, 224, 0.13);
+  --amber: #e3a23e;
+  --amber-soft: rgba(227, 162, 62, 0.14);
+  --violet: #a989e6;
+  --violet-soft: rgba(169, 137, 230, 0.14);
+  --high: #e3a23e;
+  --maxw: 1120px;
+  --navh: 64px;
+
+  /* body styles, applied to the wrapper */
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(
+      1100px 520px at 72% -10%,
+      rgba(94, 160, 224, 0.06),
+      transparent 62%
+    ),
+    radial-gradient(900px 480px at 12% 4%, rgba(235, 90, 82, 0.05), transparent 60%);
+}
+.landing * {
+  box-sizing: border-box;
+}
+/* smooth in-page scroll only when the landing is present — never affects /arena */
+html:has(.landing) {
+  scroll-behavior: smooth;
+}
+.landing a {
+  color: inherit;
+  text-decoration: none;
+}
+.landing .mono {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+}
+.landing .wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+.landing .eyebrow {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.landing h1,
+.landing h2,
+.landing h3 {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.landing .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.12s, background 0.15s, border-color 0.15s;
+  border: 1px solid transparent;
+}
+.landing .btn:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+.landing .btn-primary {
+  background: var(--text);
+  color: #0b0c0f;
+}
+.landing .btn-primary:hover {
+  transform: translateY(-1px);
+}
+.landing .btn-ghost {
+  background: transparent;
+  border-color: var(--line2);
+  color: var(--text);
+}
+.landing .btn-ghost:hover {
+  background: var(--surface2);
+}
+
+/* nav */
+.landing nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.landing .navin {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 28px;
+  height: var(--navh);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.landing .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.landing .mark {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+}
+.landing .brand .name {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.15em;
+}
+.landing .navlinks {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+.landing .navlinks a {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 12.5px;
+  color: var(--text2);
+  letter-spacing: 0.02em;
+}
+.landing .navlinks a:hover {
+  color: var(--text);
+}
+.landing .navcta {
+  padding: 8px 15px;
+  font-size: 13.5px;
+}
+/* .navlinks a overrides .btn-primary to grey — force the nav CTA black */
+.landing .navlinks a.navcta {
+  color: #0b0c0f;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+}
+/* EN | ID toggle — same look/behavior as the dashboard toggle, scoped here */
+.landing .langtoggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 12.5px;
+}
+.landing .lang {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: 0.04em;
+  color: var(--text3);
+  transition: color 0.12s;
+}
+.landing .lang:hover {
+  color: var(--text2);
+}
+.landing .lang.on {
+  color: var(--text);
+}
+.landing .lang:focus-visible {
+  outline: 2px solid var(--text2);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+.landing .langdiv {
+  color: var(--line2);
+}
+@media (max-width: 760px) {
+  .landing .navlinks a:not(.navcta) {
+    display: none;
+  }
+}
+
+/* hero */
+.landing .hero {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - var(--navh));
+  display: flex;
+  flex-direction: column;
+  padding-top: 36px;
+}
+/* atmospheric glow filling the hero — no grid, no scroll cue */
+.landing .hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      ellipse 66% 60% at 50% 44%,
+      rgba(94, 160, 224, 0.15),
+      transparent 68%
+    ),
+    radial-gradient(ellipse 72% 34% at 50% 4%, rgba(94, 160, 224, 0.06), transparent 72%),
+    radial-gradient(
+      ellipse 94% 52% at 50% 112%,
+      rgba(227, 162, 62, 0.13),
+      transparent 70%
+    ),
+    radial-gradient(ellipse 130% 105% at 50% 48%, transparent 56%, rgba(0, 0, 0, 0.3) 100%);
+}
+.landing .heroin {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 54px;
+  align-items: center;
+  align-content: center;
+  flex: 1;
+}
+.landing .hero h1 {
+  font-size: 62px;
+  line-height: 1.02;
+  margin: 18px 0 0;
+}
+.landing .hero .lede {
+  color: var(--text2);
+  font-size: 18px;
+  margin: 22px 0 0;
+  max-width: 34ch;
+}
+.landing .hero .diff {
+  margin: 18px 0 0;
+  font-size: 15px;
+  color: var(--text);
+}
+.landing .hero .diff b {
+  color: var(--blue);
+  font-weight: 600;
+}
+.landing .triad {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 26px 0 0;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+.landing .triad span {
+  font-weight: 500;
+}
+.landing .triad .f {
+  color: var(--red);
+}
+.landing .triad .x {
+  color: var(--blue);
+}
+.landing .triad .p {
+  color: var(--amber);
+}
+.landing .triad .arr {
+  color: var(--text3);
+}
+.landing .triad .f,
+.landing .triad .x,
+.landing .triad .p {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.landing .triad svg {
+  width: 14px;
+  height: 14px;
+}
+.landing .herocta {
+  display: flex;
+  gap: 12px;
+  margin: 30px 0 0;
+  flex-wrap: wrap;
+}
+
+/* hero passport card */
+.landing .pcard {
+  background: linear-gradient(180deg, var(--surface), var(--bg2));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
+}
+.landing .pcard .extag {
+  display: inline-block;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 9px;
+  margin-bottom: 12px;
+}
+.landing .pcard .ph {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 3px;
+}
+.landing .pcard .pt {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+}
+.landing .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  background: var(--violet-soft);
+  border: 1px solid rgba(169, 137, 230, 0.4);
+  color: var(--violet);
+}
+.landing .pcard .pid {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 14px;
+}
+.landing .step {
+  display: flex;
+  gap: 11px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+.landing .step:first-of-type {
+  border-top: 0;
+}
+.landing .step .d {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex: 0 0 auto;
+}
+.landing .step.r .d {
+  background: var(--red);
+}
+.landing .step.b .d {
+  background: var(--blue);
+}
+.landing .step.a .d {
+  background: var(--amber);
+}
+.landing .step.h .d {
+  background: var(--violet);
+}
+.landing .step.s .d {
+  background: var(--text3);
+}
+.landing .step .di {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.landing .step .di svg {
+  width: 16px;
+  height: 16px;
+}
+.landing .step.r .di {
+  color: var(--red);
+}
+.landing .step.b .di {
+  color: var(--blue);
+}
+.landing .step.a .di {
+  color: var(--amber);
+}
+.landing .step.h .di {
+  color: var(--violet);
+}
+.landing .step .sl {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+}
+.landing .step .sd {
+  font-size: 12.5px;
+  color: var(--text2);
+}
+.landing .step .sd .mono {
+  color: var(--text);
+}
+.landing .sealed {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 12px;
+  color: var(--text2);
+}
+.landing .sealed .ok {
+  color: #6fb585;
+}
+
+/* section shell */
+.landing section {
+  padding: 74px 0;
+}
+.landing .shead {
+  max-width: 620px;
+  margin: 0 0 40px;
+}
+.landing .shead h2 {
+  font-size: 38px;
+  line-height: 1.08;
+  margin: 12px 0 0;
+}
+.landing .shead p {
+  color: var(--text2);
+  font-size: 17px;
+  margin: 16px 0 0;
+}
+
+/* agents */
+.landing .agrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.landing .acard {
+  --ac: var(--text3);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--text3);
+  border-radius: 14px;
+  padding: 24px 22px;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.landing .acard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px -8px color-mix(in srgb, var(--ac) 30%, transparent);
+}
+.landing .acard.red {
+  --ac: var(--red);
+  border-top-color: var(--red);
+}
+.landing .acard.blue {
+  --ac: var(--blue);
+  border-top-color: var(--blue);
+}
+.landing .acard.amber {
+  --ac: var(--amber);
+  border-top-color: var(--amber);
+}
+.landing .acard .role {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.landing .acard.red .role {
+  color: var(--red);
+}
+.landing .acard.blue .role {
+  color: var(--blue);
+}
+.landing .acard.amber .role {
+  color: var(--amber);
+}
+.landing .acard h3 {
+  font-size: 21px;
+  margin: 9px 0 0;
+}
+.landing .acard .ad {
+  color: var(--text2);
+  font-size: 14.5px;
+  margin: 12px 0 16px;
+}
+.landing .acard ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.landing .acard li {
+  font-size: 13.5px;
+  color: var(--text2);
+  padding-left: 18px;
+  position: relative;
+}
+.landing .acard li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text3);
+}
+.landing .acard.red li::before {
+  background: var(--red);
+}
+.landing .acard.blue li::before {
+  background: var(--blue);
+}
+.landing .acard.amber li::before {
+  background: var(--amber);
+}
+.landing .humannote {
+  margin-top: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--violet);
+  border-radius: 14px;
+  padding: 24px 22px;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.landing .humannote:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px -8px color-mix(in srgb, var(--violet) 30%, transparent);
+}
+.landing .humannote .hbody {
+  display: flex;
+  flex-direction: column;
+}
+.landing .humannote .role {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--violet);
+}
+.landing .humannote h3 {
+  font-size: 18px;
+  margin: 8px 0 0;
+}
+.landing .humannote p {
+  font-size: 13.5px;
+  color: var(--text2);
+  margin: 8px 0 0;
+}
+/* agent icons (3 cards + the "+ You" note) */
+.landing .acard .aicon {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+.landing .acard .aicon svg {
+  width: 23px;
+  height: 23px;
+}
+.landing .acard.red .aicon {
+  background: var(--red-soft);
+  color: var(--red);
+  border-color: rgba(235, 90, 82, 0.28);
+}
+.landing .acard.blue .aicon {
+  background: var(--blue-soft);
+  color: var(--blue);
+  border-color: rgba(94, 160, 224, 0.28);
+}
+.landing .acard.amber .aicon {
+  background: var(--amber-soft);
+  color: var(--amber);
+  border-color: rgba(227, 162, 62, 0.28);
+}
+.landing .humannote .hicon {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--violet-soft);
+  color: var(--violet);
+  border: 1px solid rgba(169, 137, 230, 0.28);
+}
+.landing .humannote .hicon svg {
+  width: 23px;
+  height: 23px;
+}
+
+/* steps */
+.landing .steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.landing .stepc {
+  background: var(--bg2);
+  padding: 24px 22px;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.landing .stepc:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px -8px color-mix(in srgb, var(--ac) 30%, transparent);
+}
+.landing .stepc .no {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 12px;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+}
+.landing .stepc h3 {
+  font-size: 17px;
+  margin: 10px 0 0;
+}
+.landing .stepc p {
+  color: var(--text2);
+  font-size: 13.5px;
+  margin: 9px 0 0;
+}
+.landing .stepc .t {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 11px;
+  color: var(--amber);
+  margin-top: 12px;
+  display: block;
+}
+/* per-step accent color + icon */
+.landing .stepc {
+  --ac: var(--text2);
+}
+.landing .stepc.red {
+  --ac: var(--red);
+}
+.landing .stepc.blue {
+  --ac: var(--blue);
+}
+.landing .stepc.amber {
+  --ac: var(--amber);
+}
+.landing .stepc.violet {
+  --ac: var(--violet);
+}
+.landing .stepc.seal {
+  --ac: #6fb585;
+}
+.landing .stepc .sicon {
+  color: var(--ac);
+  width: 26px;
+  height: 26px;
+  display: block;
+  margin-bottom: 13px;
+}
+.landing .stepc .sicon svg {
+  width: 26px;
+  height: 26px;
+}
+.landing .stepc .no {
+  color: var(--ac);
+}
+.landing .stepc .t {
+  color: var(--text3);
+}
+
+/* proof */
+.landing .proof {
+  background: linear-gradient(180deg, var(--bg2), var(--bg));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.landing .proofin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+.landing .shead.phead {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.landing .chainviz {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 28px;
+  width: 100%;
+  max-width: 720px;
+}
+.landing .chaintrack {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.landing .cblock {
+  flex: 0 0 auto;
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 16px;
+  min-width: 80px;
+  text-align: center;
+  transition: border-color 0.25s, background 0.25s;
+}
+.landing .cnum {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+  transition: color 0.25s;
+}
+.landing .chash {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 9px;
+  color: var(--text3);
+  margin-bottom: 7px;
+}
+.landing .ckicon {
+  width: 16px;
+  height: 16px;
+  margin: 0 auto;
+  display: block;
+}
+.landing .ckicon-ok {
+  color: #6fb585;
+}
+.landing .ckicon-bad {
+  color: var(--red);
+  display: none;
+}
+.landing .cstatus .cdot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+.landing .cblock.head {
+  border-color: var(--blue);
+}
+.landing .cblock.head .cnum {
+  color: var(--blue);
+}
+.landing .chainviz.broken .cblock.tampered {
+  border-color: var(--red);
+  background: var(--red-soft);
+  animation: cshake 0.4s ease-out;
+}
+.landing .chainviz.broken .cblock.tampered .cnum {
+  color: var(--red);
+}
+.landing .chainviz.broken .cblock.tampered .ckicon-ok {
+  display: none;
+}
+.landing .chainviz.broken .cblock.tampered .ckicon-bad {
+  display: block;
+}
+.landing .clink {
+  flex: 1;
+  height: 2px;
+  background: var(--line2);
+  min-width: 18px;
+  transition: background 0.25s;
+}
+.landing .chainviz.broken .clink.after-tampered {
+  background: transparent;
+  border-top: 2px dashed var(--red);
+  height: 0;
+}
+.landing .chainstatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+.landing .cstatus-ok,
+.landing .cstatus-bad {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid;
+  transition: opacity 0.25s;
+}
+.landing .cstatus-ok {
+  background: rgba(111, 181, 133, 0.1);
+  border-color: rgba(111, 181, 133, 0.4);
+  color: #6fb585;
+}
+.landing .cstatus-bad {
+  background: var(--red-soft);
+  border-color: rgba(235, 90, 82, 0.4);
+  color: var(--red);
+  display: none;
+}
+.landing .chainviz.broken .cstatus-ok {
+  display: none;
+}
+.landing .chainviz.broken .cstatus-bad {
+  display: inline-flex;
+}
+.landing .chainctl {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  justify-content: center;
+}
+.landing .cbtn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--line2);
+  background: var(--surface2);
+  color: var(--text2);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.landing .cbtn:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+.landing .cbtn-break {
+  border-color: rgba(235, 90, 82, 0.3);
+  color: var(--red);
+}
+.landing .cbtn-break:hover,
+.landing .cbtn-break.active {
+  background: var(--red-soft);
+  border-color: var(--red);
+  color: var(--red);
+}
+.landing .cbtn-restore.active {
+  background: rgba(111, 181, 133, 0.1);
+  border-color: rgba(111, 181, 133, 0.4);
+  color: #6fb585;
+}
+@keyframes cshake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-4px); }
+  40%      { transform: translateX(4px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(3px); }
+}
+
+/* vs — why crucible */
+.landing .vsgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  width: 100%;
+  max-width: none;
+  align-items: stretch;
+}
+.landing .vscol {
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  padding: 24px 22px;
+  border: 1px solid var(--line);
+  min-width: 0;
+}
+.landing .vsmuted {
+  background: var(--surface);
+  opacity: 0.65;
+}
+.landing .vsbright {
+  background: var(--surface2);
+  border-color: var(--line2);
+}
+.landing .vshead {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 16px;
+}
+.landing .vsrows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.landing .vsrow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+}
+.landing .vsrow p {
+  font-size: 12.5px;
+  color: var(--text3);
+  margin: 3px 0 0;
+  line-height: 1.5;
+}
+.landing .vsrow.miss .vsstep {
+  color: var(--text3);
+  text-decoration: line-through;
+}
+.landing .vsi {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.landing .vsi svg {
+  width: 16px;
+  height: 16px;
+}
+.landing .vsi-c { color: #6fb585; }
+.landing .vsi-x { color: var(--text3); }
+.landing .vsi-c.red   { color: var(--red); }
+.landing .vsi-c.blue  { color: var(--blue); }
+.landing .vsi-c.amber { color: var(--amber); }
+.landing .vsstep { color: var(--text2); font-weight: 500; }
+.landing .vslab {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 12px;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+  margin-top: auto;
+}
+
+/* tech stack — logo wall (tiered) */
+.landing .logowall {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.landing .lprimary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.landing .lsecondary {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+}
+.landing .lsecondary > .logo {
+  grid-column: span 3;
+}
+.landing .lsecondary > .logo:nth-child(n+5) {
+  grid-column: span 4;
+}
+.landing .logo {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--text2);
+  transition: border-color 0.2s, color 0.2s;
+}
+.landing .logo:hover {
+  border-color: var(--line2);
+  color: var(--text);
+}
+.landing .logo img {
+  height: 24px;
+  width: auto;
+  flex: 0 0 auto;
+}
+.landing .lprimary .logo {
+  align-items: flex-start;
+  padding: 20px 24px;
+  font-size: 16px;
+}
+.landing .lprimary .logo img {
+  height: 32px;
+  margin-top: 2px;
+}
+.landing .lsecondary .logo {
+  font-size: 13px;
+  padding: 13px 15px;
+  gap: 10px;
+}
+.landing .lsecondary .logo img {
+  height: 20px;
+}
+.landing .ltag {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text3);
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+}
+
+/* trust band */
+.landing .band {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg2);
+}
+.landing .bandin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 40px;
+  justify-content: center;
+  padding: 26px 28px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 13px;
+  color: var(--text2);
+}
+.landing .bandin span {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.landing .bandin b {
+  color: var(--text);
+  font-weight: 500;
+}
+.landing .bandin .bi {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--text2);
+  opacity: .85;
+}
+
+/* final cta */
+.landing .final {
+  text-align: center;
+  padding: 92px 0;
+}
+.landing .final h2 {
+  font-size: 44px;
+  line-height: 1.05;
+}
+.landing .final p {
+  color: var(--text2);
+  font-size: 18px;
+  margin: 18px auto 0;
+  max-width: 46ch;
+}
+.landing .finalcta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+/* footer */
+.landing footer {
+  /* globals.css has a bare `footer{display:flex}` (dashboard) that leaks in via
+     the element selector; force block so .footin and .foot-base stack vertically. */
+  display: block;
+  border-top: 1px solid var(--line);
+  padding: 44px 0 38px;
+}
+.landing .footin {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 30px;
+}
+.landing .footbrand .name {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.14em;
+}
+.landing .footbrand p {
+  color: var(--text3);
+  font-size: 13px;
+  margin: 12px 0 0;
+  max-width: 30ch;
+}
+.landing .footbrand .fp {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 12px;
+  margin-top: 14px;
+}
+.landing .footbrand .fp .f {
+  color: var(--red);
+}
+.landing .footbrand .fp .x {
+  color: var(--blue);
+}
+.landing .footbrand .fp .p {
+  color: var(--amber);
+}
+.landing .footbrand .fp .arr {
+  color: var(--text3);
+}
+.landing .footbrand .fp .f,
+.landing .footbrand .fp .x,
+.landing .footbrand .fp .p {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.landing .footbrand .fp svg {
+  width: 12px;
+  height: 12px;
+}
+.landing .fcol h4 {
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: 0 0 14px;
+  font-weight: 400;
+}
+.landing .fcol a,
+.landing .fcol span {
+  display: block;
+  font-size: 13.5px;
+  color: var(--text2);
+  margin-bottom: 10px;
+}
+.landing .fcol a:hover {
+  color: var(--text);
+}
+.landing .foot-base {
+  max-width: var(--maxw);
+  margin: 34px auto 0;
+  padding: 18px 28px 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
+  font-size: 11.5px;
+  color: var(--text3);
+}
+
+@keyframes landingrise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .landing .rise {
+    animation: landingrise 0.6s ease-out both;
+  }
+}
+
+@media (max-width: 880px) {
+  .landing .hero {
+    min-height: auto;
+    display: block;
+    padding: 72px 0 56px;
+  }
+  .landing .heroin {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .landing .hero h1 {
+    font-size: 46px;
+  }
+  .landing .agrid {
+    grid-template-columns: 1fr;
+  }
+  .landing .lprimary {
+    grid-template-columns: 1fr;
+  }
+  .landing .lsecondary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .landing .lsecondary > .logo,
+  .landing .lsecondary > .logo:nth-child(n+5) {
+    grid-column: auto;
+  }
+  .landing .vsgrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .landing .steps {
+    grid-template-columns: 1fr;
+  }
+  .landing .footin {
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+  }
+  .landing section {
+    padding: 56px 0;
+  }
+}
+@media (max-width: 480px) {
+  .landing .wrap {
+    padding: 0 18px;
+  }
+  .landing .navin {
+    padding: 0 18px;
+  }
+  .landing .hero {
+    padding: 56px 0 40px;
+  }
+  .landing .hero h1 {
+    font-size: 38px;
+  }
+  .landing .final h2 {
+    font-size: 32px;
+  }
+  .landing .lsecondary {
+    grid-template-columns: 1fr;
+  }
+  .landing .footin {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── animated white aurora behind landing content (landing only) ── */
+.landing .aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.landing .aurora span {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(70px);
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0.12;
+}
+.landing .aurora .a1 {
+  width: 46vw;
+  height: 46vw;
+  top: -12vw;
+  left: -6vw;
+  opacity: 0.15;
+}
+.landing .aurora .a2 {
+  width: 40vw;
+  height: 40vw;
+  top: 14vh;
+  right: -10vw;
+  opacity: 0.12;
+}
+.landing .aurora .a3 {
+  width: 34vw;
+  height: 34vw;
+  bottom: -14vw;
+  left: 30vw;
+  opacity: 0.11;
+}
+.landing .aurora .a4 {
+  width: 30vw;
+  height: 30vw;
+  top: 30vh;
+  left: 38vw;
+  opacity: 0.1;
+}
+.landing .aurora .a5 {
+  width: 36vw;
+  height: 36vw;
+  bottom: -8vw;
+  right: 6vw;
+  opacity: 0.11;
+}
+.landing .aurora .a6 {
+  width: 26vw;
+  height: 26vw;
+  top: -6vw;
+  left: 46vw;
+  opacity: 0.09;
+}
+/* aurora sits at z-index:0 (under content) but above the .landing background,
+   so real content must be lifted above it */
+/* Lift content above the fixed aurora — but EXCLUDE nav, whose own rule sets
+   position:sticky/z-index:20. (This selector outweighs `.landing nav`, so without
+   the :not(nav) it would force the nav back to position:relative and break sticky.) */
+.landing > *:not(.aurora):not(nav) {
+  position: relative;
+  z-index: 1;
+}
+@keyframes crucible-aurora1 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(16vw, 14vh) scale(1.18);
+  }
+}
+@keyframes crucible-aurora2 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-15vw, 18vh) scale(0.85);
+  }
+}
+@keyframes crucible-aurora3 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(13vw, -12vh) scale(1.12);
+  }
+}
+@keyframes crucible-aurora4 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-14vw, -10vh) scale(1.15);
+  }
+}
+@keyframes crucible-aurora5 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(10vw, 16vh) scale(0.9);
+  }
+}
+@keyframes crucible-aurora6 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-12vw, 12vh) scale(1.2);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .landing .aurora .a1 {
+    animation: crucible-aurora1 28s ease-in-out infinite alternate;
+  }
+  .landing .aurora .a2 {
+    animation: crucible-aurora2 34s ease-in-out infinite alternate;
+  }
+  .landing .aurora .a3 {
+    animation: crucible-aurora3 40s ease-in-out infinite alternate;
+  }
+  .landing .aurora .a4 {
+    animation: crucible-aurora4 31s ease-in-out infinite alternate;
+  }
+  .landing .aurora .a5 {
+    animation: crucible-aurora5 37s ease-in-out infinite alternate;
+  }
+  .landing .aurora .a6 {
+    animation: crucible-aurora6 44s ease-in-out infinite alternate;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s ease, transform 0.65s cubic-bezier(0.22, 0.72, 0.24, 1);
+  }
+  .landing .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+  .landing .stagger > *:nth-child(2) { transition-delay: 0.06s; }
+  .landing .stagger > *:nth-child(3) { transition-delay: 0.12s; }
+  .landing .stagger > *:nth-child(4) { transition-delay: 0.18s; }
+  .landing .stagger > *:nth-child(5) { transition-delay: 0.24s; }
+  .landing .stagger > *:nth-child(6) { transition-delay: 0.30s; }
+}
+
+/* ── Affordance audit: strip false hover cues from display-only cards ────── */
+
+/* Agent cards + +You note — pure display, no nav target */
+.landing .acard       { cursor: default; }
+.landing .acard:hover { transform: none; box-shadow: none; }
+.landing .humannote   { cursor: default; }
+.landing .humannote:hover { transform: none; box-shadow: none; }
+
+/* How-It-Works step cards — informational only */
+.landing .stepc       { cursor: default; }
+.landing .stepc:hover { transform: none; box-shadow: none; }
+
+/* Tech-stack logo tiles — not links, no hover affordance */
+.landing .logo        { cursor: default; }
+.landing .logo:hover  { border-color: var(--line); color: var(--text2); }

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crucible — Try the demo</title>
+<style>
+  :root{
+    --bg:#0B0C0F; --bg2:#0F1014;
+    --surface:#16181D; --surface2:#1B1E24;
+    --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.14);
+    --text:#E7E9EC; --text2:rgba(231,233,236,.65); --text3:rgba(231,233,236,.42);
+    --red:#EB5A52; --red-soft:rgba(235,90,82,.12);
+    --blue:#5EA0E0; --amber:#E3A23E; --violet:#A989E6;
+    --maxw:1120px; --navh:60px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{background:var(--bg); color:var(--text); font-family:"Plus Jakarta Sans",-apple-system,system-ui,sans-serif; font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased}
+  body{min-height:100vh; display:flex; flex-direction:column}
+  a{color:inherit; text-decoration:none}
+  button{font-family:inherit; cursor:pointer; border:0; background:transparent; color:inherit}
+
+  /* nav */
+  nav{position:sticky; top:0; z-index:10; height:var(--navh); background:rgba(11,12,15,.7); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+  .navin{max-width:var(--maxw); margin:0 auto; height:100%; padding:0 28px; display:flex; align-items:center; gap:18px}
+  .navback{display:inline-flex; align-items:center; gap:8px; color:var(--text2); font-size:13px; transition:color .2s}
+  .navback:hover{color:var(--text)}
+  .navback svg{width:14px; height:14px}
+  .navsep{color:var(--text3); font-size:14px}
+  .navlogo{display:inline-flex; align-items:center; gap:9px; font-weight:600; font-size:14px; letter-spacing:.14em}
+  .navlogo .hex{width:16px; height:16px; color:var(--text)}
+  .navspacer{flex:1}
+  .navstage{font-family:"Plus Jakarta Sans"; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--text3); display:inline-flex; align-items:center; gap:12px}
+  .navdots{display:inline-flex; gap:5px}
+  .navdot{width:18px; height:3px; background:var(--surface2); border-radius:2px; transition:background .3s}
+  .navdot.on{background:var(--text)}
+  .navdot.done{background:var(--text3)}
+
+  /* main */
+  main{flex:1; padding:64px 28px 120px}
+  .wrap{max-width:760px; margin:0 auto}
+
+  /* heading */
+  .shead{text-align:center; margin-bottom:36px}
+  .shead .eyebrow{font-family:"Plus Jakarta Sans"; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--text3)}
+  .shead h1{font-size:44px; line-height:1.06; margin:14px 0 18px; font-weight:500; letter-spacing:-.015em}
+  .shead p{color:var(--text2); font-size:16px; max-width:540px; margin:0 auto; line-height:1.55}
+
+  /* runbook card */
+  .runbook{background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; margin:40px 0 24px}
+  .rbhead{padding:13px 20px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; font-family:"Plus Jakarta Sans"; font-size:12px; color:var(--text3); letter-spacing:.03em}
+  .rbhead .rbdot{width:7px; height:7px; border-radius:50%; background:var(--text3); flex:0 0 auto}
+  .rbhead .rbtag{margin-left:auto; font-family:ui-monospace,monospace; font-size:11px; color:var(--text3); padding:3px 8px; border:1px solid var(--line); border-radius:5px}
+
+  /* runbook lines */
+  .rline{position:relative; display:grid; grid-template-columns:34px 1fr; gap:14px; padding:14px 20px 14px 18px; border-top:1px solid var(--line); cursor:pointer; transition:background .18s ease; user-select:none}
+  .rline:first-of-type{border-top:0}
+  .rline:hover:not(.clicked){background:rgba(255,255,255,.022)}
+  .rline.clicked{cursor:default}
+  .rline .rnum{font-family:ui-monospace,monospace; font-size:13px; color:var(--text3); padding-top:1px; transition:color .25s}
+  .rline .rcode{font-family:ui-monospace,"JetBrains Mono",monospace; font-size:13.5px; color:var(--text); line-height:1.55; word-break:break-word}
+  .rline .rfb{grid-column:2; margin-top:8px; font-size:13px; color:var(--text2); padding-left:20px; position:relative; max-height:0; overflow:hidden; opacity:0; transition:max-height .3s ease, opacity .25s ease .05s, margin-top .3s ease}
+  .rline.clicked .rfb{max-height:120px; opacity:1; margin-top:9px}
+  .rline .rfb::before{position:absolute; left:0; top:0; font-weight:700; font-size:13px}
+
+  /* flaw clicked — red highlight, ✗ marker, red left bar */
+  .rline.flaw.clicked{background:color-mix(in srgb, var(--red) 7%, transparent)}
+  .rline.flaw.clicked .rnum{color:var(--red); font-weight:600}
+  .rline.flaw.clicked::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--red)}
+  .rline.flaw.clicked .rfb::before{content:"✗"; color:var(--red)}
+  .rline.flaw.clicked .rfb{color:var(--text2)}
+
+  /* safe clicked — dimmed, ✓ marker */
+  .rline.safe.clicked{opacity:.55}
+  .rline.safe.clicked .rfb::before{content:"✓"; color:#7FBF95}
+  .rline.safe.clicked .rfb{color:var(--text3)}
+
+  /* control bar */
+  .control{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 22px; background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-top:24px}
+  .counter{display:inline-flex; align-items:baseline; gap:10px; font-family:"Plus Jakarta Sans"; font-size:14px; color:var(--text2)}
+  .counter .cnum{color:var(--text); font-weight:600; font-size:22px; font-family:ui-monospace,monospace; min-width:14px; display:inline-block; text-align:right}
+  .counter .ctotal{color:var(--text3); font-size:14px}
+  .control-actions{display:flex; gap:10px; align-items:center}
+  .btn{padding:11px 20px; border-radius:10px; font-family:"Plus Jakarta Sans"; font-weight:500; font-size:14px; transition:all .2s ease; white-space:nowrap}
+  .btn-primary{background:var(--text); color:var(--bg)}
+  .btn-primary:hover{background:#fff; transform:translateY(-1px)}
+  .btn-ghost{color:var(--text2); border:1px solid var(--line)}
+  .btn-ghost:hover{color:var(--text); border-color:var(--line2)}
+  .skip{font-size:13px; color:var(--text3); text-align:center; margin-top:16px; display:block; transition:color .2s}
+  .skip:hover{color:var(--text2)}
+
+  /* hint pulse — subtle "click me" cue on first unclicked line, fades after first interaction */
+  .runbook.fresh .rline:not(.clicked):first-of-type{animation:hintPulse 2.4s ease-in-out 1.5s 2}
+  @keyframes hintPulse{
+    0%,100%{background:transparent}
+    50%{background:rgba(255,255,255,.04)}
+  }
+
+  /* responsive */
+  @media (max-width:640px){
+    main{padding:40px 18px 100px}
+    .shead h1{font-size:30px}
+    .control{flex-direction:column; align-items:stretch}
+    .control-actions{flex-direction:column}
+    .btn{width:100%}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="navin">
+    <a href="#" class="navback" aria-label="Back to landing">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Back
+    </a>
+    <div class="navsep">|</div>
+    <div class="navlogo">
+      <svg class="hex" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5z"/></svg>
+      CRUCIBLE
+    </div>
+    <div class="navspacer"></div>
+    <div class="navstage">
+      Stage 1 / 5
+      <span class="navdots" aria-hidden="true">
+        <span class="navdot on"></span>
+        <span class="navdot"></span>
+        <span class="navdot"></span>
+        <span class="navdot"></span>
+        <span class="navdot"></span>
+      </span>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <div class="shead">
+      <span class="eyebrow">Stage 1 of 5 · Find the flaw</span>
+      <h1>This runbook ran into production.</h1>
+      <p>Click every step you'd flag as dangerous. We'll show you what Red Agent found after.</p>
+    </div>
+
+    <div class="runbook fresh" id="runbook">
+      <div class="rbhead">
+        <span class="rbdot"></span>
+        <span>Incident runbook — Database outage</span>
+        <span class="rbtag">v2.3 · pre-hardening</span>
+      </div>
+
+      <div class="rline flaw">
+        <span class="rnum">01</span>
+        <span class="rcode">ssh -i ~/.ssh/admin_key root@db-primary-01.prod</span>
+        <span class="rfb">Privileged access without an audit trail. Use sudo with session logging — root over SSH leaves no who/what/when record.</span>
+      </div>
+
+      <div class="rline safe">
+        <span class="rnum">02</span>
+        <span class="rcode">psql -c "SELECT * FROM pg_stat_replication" # verify lag &lt; 1s</span>
+        <span class="rfb">Pre-change verification. Confirms the replica is ready before any failover.</span>
+      </div>
+
+      <div class="rline flaw">
+        <span class="rnum">03</span>
+        <span class="rcode">systemctl stop postgresql</span>
+        <span class="rfb">Stops the primary <em>before</em> promoting the replica. Application sees a hard outage window. Promote replica first, then stop primary.</span>
+      </div>
+
+      <div class="rline flaw">
+        <span class="rnum">04</span>
+        <span class="rcode">tar -czf /tmp/db-snap.tar.gz /var/lib/postgresql</span>
+        <span class="rfb">/tmp is ephemeral — wiped on reboot. The snapshot is lost the moment recovery requires a restart.</span>
+      </div>
+
+      <div class="rline flaw">
+        <span class="rnum">05</span>
+        <span class="rcode">psql -c "DROP INDEX users_pkey CASCADE"</span>
+        <span class="rfb">CASCADE silently drops every dependent object (FKs, views). No backup taken first. One typo = unrecoverable data loss.</span>
+      </div>
+
+      <div class="rline flaw">
+        <span class="rnum">06</span>
+        <span class="rcode">systemctl start postgresql &amp;&amp; nc -z localhost 5432</span>
+        <span class="rfb">Port-open ≠ service-healthy. Postgres can listen on 5432 while still rejecting queries. Run a real <code>SELECT 1</code> probe.</span>
+      </div>
+
+      <div class="rline safe">
+        <span class="rnum">07</span>
+        <span class="rcode">pagerduty ack --user oncall-dba --message "primary recovered"</span>
+        <span class="rfb">Standard handoff. Confirms recovery with the right human in the loop.</span>
+      </div>
+    </div>
+
+    <div class="control">
+      <div class="counter">
+        <span class="cnum" id="count">0</span>
+        <span><span class="ctotal">of 5 flaws caught</span></span>
+      </div>
+      <div class="control-actions">
+        <button class="btn btn-primary" id="done">Show me what Red found →</button>
+      </div>
+    </div>
+    <a href="#" class="skip">Skip the game →</a>
+  </div>
+</main>
+
+<script>
+  (function(){
+    var lines = document.querySelectorAll('.rline');
+    var counter = document.getElementById('count');
+    var runbook = document.getElementById('runbook');
+    var found = 0;
+    lines.forEach(function(line){
+      line.addEventListener('click', function(){
+        if (line.classList.contains('clicked')) return;
+        line.classList.add('clicked');
+        runbook.classList.remove('fresh');
+        if (line.classList.contains('flaw')){
+          found++;
+          counter.textContent = found;
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -10,3 +10,5 @@ __pycache__/
 
 # runtime output - do not push
 crucible_audit.jsonl
+
+.vercel

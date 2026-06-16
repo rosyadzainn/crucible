@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 // Ring geometry: viewBox 0 0 50 50, r=22, circumference = 2π×22 ≈ 138.23
 const CIRC = 138.23;
-const DURATION = 1200; // ms until router.push fires
+const DURATION = 2000; // ms until router.push fires
 
 export default function ArenaTransition({ caption }: { caption: string }) {
   const router = useRouter();

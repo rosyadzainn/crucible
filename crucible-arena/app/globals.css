@@ -994,14 +994,14 @@ footer {
   align-items: center;
   justify-content: center;
   background: var(--bg);
-  animation: at-in 0.15s ease-out both;
+  animation: at-in 0.2s ease-out both;
 }
 .at-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 22px;
-  animation: at-out 0.28s ease-in 0.92s both;
+  animation: at-out 0.45s ease-in 1.55s both;
 }
 .at-ring-wrap {
   position: relative;
@@ -1024,7 +1024,7 @@ footer {
 }
 .at-arc {
   stroke-dashoffset: 138.23;
-  animation: at-ring 0.55s ease-in-out 0.05s forwards;
+  animation: at-ring 0.9s ease-in-out 0.08s forwards;
 }
 .at-caption {
   font-family: var(--font-jakarta, "Plus Jakarta Sans", sans-serif);

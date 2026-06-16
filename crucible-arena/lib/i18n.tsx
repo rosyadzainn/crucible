@@ -116,6 +116,7 @@ const en: Dict = {
 
   // footer (right side is brand text, kept verbatim in both languages)
   footer_left: "Crucible · Adversarial hardening desk",
+  transition_opening: "Opening the Arena…",
 
   /* ── landing page (marketing). Brand/proper nouns (Crucible, Red, Blue,
      Arbiter, Band), the tagline "Break it before reality does.", the
@@ -340,6 +341,7 @@ const id: Dict = {
   msg_error: "Gagal memuat peristiwa audit: {err}",
 
   footer_left: "Crucible · Meja perkuatan adversarial",
+  transition_opening: "Membuka Arena…",
 
   // ── landing page (marketing) ──
   lp_nav_agents: "Para Agen",

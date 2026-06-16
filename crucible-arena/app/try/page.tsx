@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useLanguage } from "@/lib/i18n";
+import ArenaTransition from "@/components/ArenaTransition";
 import "./try.css";
 
 // ─── Nav ─────────────────────────────────────────────────────────────────────
@@ -532,9 +535,22 @@ function Stage4({ onDone }: { onDone: () => void }) {
 
 function Stage5({ onRestart }: { onRestart: () => void }) {
   const [broken, setBroken] = useState(false);
+  const [entering, setEntering] = useState(false);
+  const router = useRouter();
+  const { t } = useLanguage();
+
+  function handleArenaClick() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      router.push("/arena");
+      return;
+    }
+    setEntering(true);
+  }
 
   return (
-    <div className="wrap s5">
+    <>
+      {entering && <ArenaTransition caption={t("transition_opening")} />}
+      <div className="wrap s5">
       <div className="shead s5">
         <span className="eyebrow">Stage 5 of 5 · Verify</span>
         <h1>Sealed. Try to break it.</h1>
@@ -636,10 +652,11 @@ function Stage5({ onRestart }: { onRestart: () => void }) {
       </div>
 
       <div className="finalcta">
-        <Link href="/arena" className="btn btn-primary">Open the Arena →</Link>
+        <button className="btn btn-primary" onClick={handleArenaClick}>Open the Arena →</button>
         <button className="restart" onClick={onRestart}>Try another document</button>
       </div>
     </div>
+    </>
   );
 }
 

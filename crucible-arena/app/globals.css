@@ -985,6 +985,67 @@ footer {
   flex-wrap: wrap;
 }
 
+/* ── arena transition overlay ── */
+.at-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  animation: at-in 0.15s ease-out both;
+}
+.at-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  animation: at-out 0.28s ease-in 0.92s both;
+}
+.at-ring-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.at-ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.at-hex {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
+.at-arc {
+  stroke-dashoffset: 138.23;
+  animation: at-ring 0.55s ease-in-out 0.05s forwards;
+}
+.at-caption {
+  font-family: var(--font-jakarta, "Plus Jakarta Sans", sans-serif);
+  font-size: 13px;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+@keyframes at-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes at-ring {
+  from { stroke-dashoffset: 138.23; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes at-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(1.05); }
+}
+
 /* ── arena ambient aurora ── */
 .arena-aurora {
   position: fixed;

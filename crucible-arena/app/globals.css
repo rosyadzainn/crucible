@@ -274,11 +274,16 @@ body {
 }
 .loghead {
   display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 15px 11px;
+  border-bottom: 1px solid var(--line);
+}
+.loghead-row1 {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 11px 15px;
-  border-bottom: 1px solid var(--line);
 }
 .loghead .lt {
   font-family: var(--font-jakarta, "Plus Jakarta Sans", var(--font-sans), sans-serif);
@@ -290,6 +295,76 @@ body {
   font-size: 11px;
   color: var(--text3);
 }
+.loghead-row2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.logband {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.02em;
+}
+.logband-amber {
+  color: var(--amber);
+  font-weight: 500;
+}
+.logroster {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.lr-chip {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.lr-chip.lr-red     { color: var(--red);    background: var(--red-soft);    }
+.lr-chip.lr-blue    { color: var(--blue);   background: var(--blue-soft);   }
+.lr-chip.lr-arbiter { color: var(--amber);  background: var(--amber-soft);  }
+.lr-chip.lr-human   { color: var(--violet); background: var(--violet-soft); }
+
+/* handoff connectors — derived routing between agent events */
+.handoff {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 15px;
+  height: 26px;
+  border-bottom: 1px solid var(--line);
+}
+.handoff::before,
+.handoff::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.handoff-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.handoff-arr {
+  color: var(--line2);
+}
+.htgt-blue    { color: var(--blue);   }
+.htgt-red     { color: var(--red);    }
+.htgt-arbiter { color: var(--amber);  }
+.htgt-human   { color: var(--violet); }
+.handoff-round { color: var(--text3); }
 .round {
   padding: 7px 15px;
   background: var(--surface);

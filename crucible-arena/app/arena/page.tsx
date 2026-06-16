@@ -405,6 +405,58 @@ function ClampMarkdown({ content }: { content: string }) {
   );
 }
 
+// look-ahead routing: who actually handles the next event?
+// no decision-field prediction — avoids phantom connectors when an agent
+// emits two consecutive events (e.g. Arbiter verdict then Arbiter escalate)
+const AGENT_DISPLAY: Record<string, string> = {
+  red: "Red",
+  blue: "Blue",
+  arbiter: "Arbiter",
+  human: "Human",
+  user: "Human",
+};
+
+function handoffTarget(
+  ev: AuditEvent,
+  nextEv: AuditEvent | undefined,
+): { agent: string; cls: string; nextRound?: number } | null {
+  if (!nextEv) return null; // final event — no connector
+  const cur = ev.agent?.toLowerCase();
+  const nxt = nextEv.agent?.toLowerCase();
+  if (!nxt || cur === nxt) return null; // same agent — no handoff
+  const agent = AGENT_DISPLAY[nxt] ?? nextEv.agent ?? "—";
+  const cls = agentClass(nextEv.agent);
+  // only annotate with a round number when Red is actually starting a new round
+  const isNewRound =
+    nxt === "red" &&
+    nextEv.round != null &&
+    ev.round != null &&
+    nextEv.round > ev.round;
+  return { agent, cls, nextRound: isNewRound ? nextEv.round! : undefined };
+}
+
+function HandoffConnector({
+  agent,
+  cls,
+  nextRound,
+}: {
+  agent: string;
+  cls: string;
+  nextRound?: number;
+}) {
+  return (
+    <div className="handoff">
+      <span className="handoff-pill">
+        handoff <span className="handoff-arr">→</span>{" "}
+        <span className={`handoff-target htgt-${cls}`}>{agent}</span>
+        {nextRound !== undefined && (
+          <span className="handoff-round"> · round {nextRound}</span>
+        )}
+      </span>
+    </div>
+  );
+}
+
 function EventRow({ ev }: { ev: AuditEvent }) {
   const { t, lang } = useLanguage();
   const cls = agentClass(ev.agent);
@@ -700,7 +752,8 @@ function RunView({
 
   let prevRound: number | null | undefined = undefined;
   const rowsOut: React.ReactNode[] = [];
-  for (const ev of events) {
+  for (let i = 0; i < events.length; i++) {
+    const ev = events[i];
     if (ev.round !== prevRound) {
       prevRound = ev.round;
       rowsOut.push(
@@ -710,6 +763,17 @@ function RunView({
       );
     }
     rowsOut.push(<EventRow ev={ev} key={ev.id} />);
+    const ho = handoffTarget(ev, events[i + 1]);
+    if (ho) {
+      rowsOut.push(
+        <HandoffConnector
+          key={`hoff-${ev.id}`}
+          agent={ho.agent}
+          cls={ho.cls}
+          nextRound={ho.nextRound}
+        />,
+      );
+    }
   }
 
   return (
@@ -746,14 +810,27 @@ function RunView({
       <div className="grid">
         <main className="logwrap" aria-label="Hardening event log">
           <div className="loghead">
-            <span className="lt">{t("event_log")}</span>
-            <span className="lm">
-              {t("events_rounds", {
-                n: events.length,
-                m: rounds,
-                roundsWord: plural(lang, rounds, "round", "rounds", "ronde"),
-              })}
-            </span>
+            <div className="loghead-row1">
+              <span className="lt">{t("event_log")}</span>
+              <span className="lm">
+                {t("events_rounds", {
+                  n: events.length,
+                  m: rounds,
+                  roundsWord: plural(lang, rounds, "round", "rounds", "ronde"),
+                })}
+              </span>
+            </div>
+            <div className="loghead-row2">
+              <span className="logband">
+                <span className="logband-amber">Band</span> room · agents coordinating
+              </span>
+              <span className="logroster" aria-hidden="true">
+                <span className="lr-chip lr-red">Red</span>
+                <span className="lr-chip lr-blue">Blue</span>
+                <span className="lr-chip lr-arbiter">Arbiter</span>
+                <span className="lr-chip lr-human">Human</span>
+              </span>
+            </div>
           </div>
           {rowsOut.map((node, i) => (
             <Fragment key={i}>{node}</Fragment>

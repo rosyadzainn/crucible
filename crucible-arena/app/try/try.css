@@ -191,7 +191,7 @@
 }
 .try .rbhead .rbtag {
   margin-left: auto;
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 11px;
   color: var(--text3);
   padding: 3px 8px;
@@ -214,14 +214,14 @@
 .try .rline:hover:not(.clicked) { background: rgba(255,255,255,.022); }
 .try .rline.clicked { cursor: default; }
 .try .rline .rnum {
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 13px;
   color: var(--text3);
   padding-top: 1px;
   transition: color .25s;
 }
 .try .rline .rcode {
-  font-family: ui-monospace, "JetBrains Mono", monospace;
+  font-family: inherit;
   font-size: 13.5px;
   color: var(--text);
   line-height: 1.55;
@@ -289,7 +289,7 @@
   color: var(--text);
   font-weight: 600;
   font-size: 22px;
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   min-width: 14px;
   display: inline-block;
   text-align: right;
@@ -423,7 +423,7 @@
 .try .ftag.high     { background: rgba(227,162,62,.12); color: var(--amber); border: 1px solid rgba(227,162,62,.3); }
 .try .ftag.medium   { background: rgba(184,168,107,.1); color: var(--med); border: 1px solid rgba(184,168,107,.28); }
 .try .fref {
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 11px;
   color: var(--text3);
   letter-spacing: .04em;
@@ -437,7 +437,7 @@
 }
 .try .finding p { color: var(--text2); font-size: 14px; line-height: 1.6; }
 .try .finding p code {
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 12.5px;
   background: var(--bg2);
   padding: 1px 6px;
@@ -463,11 +463,11 @@
 }
 .try .dhead .dtitle {
   color: var(--text2);
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 13px;
 }
 .try .dhead .dver {
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 12px;
   color: var(--text3);
   padding: 3px 9px;
@@ -514,7 +514,7 @@
   background: var(--bg2);
 }
 .try .cref .cnum {
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 11px;
   color: var(--text2);
   padding: 2px 8px;
@@ -529,7 +529,7 @@
 }
 .try .cref .ctitle { color: var(--text); font-weight: 500; font-size: 13px; }
 
-.try .diff { padding: 6px 0; font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 13px; }
+.try .diff { padding: 6px 0; font-family: inherit; font-size: 13px; }
 .try .dline {
   display: grid;
   grid-template-columns: 22px 1fr;
@@ -640,7 +640,7 @@
 }
 .try .rrow:first-of-type { border-top: 0; padding-top: 6px; }
 .try .rlbl { font-size: 14px; color: var(--text2); }
-.try .rscore { font-family: ui-monospace, monospace; font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
+.try .rscore { font-family: inherit; font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
 .try .rscore .rmax { color: var(--text3); }
 .try .rbar-wrap {
   grid-column: 1 / -1;
@@ -694,7 +694,7 @@
 .try .vmeta { flex: 1; min-width: 0; }
 .try .vmeta .vrow { display: flex; gap: 14px; flex-wrap: wrap; align-items: baseline; }
 .try .vmeta .vlbl { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text3); font-weight: 600; }
-.try .vmeta .vval { font-family: ui-monospace, monospace; font-size: 13px; color: var(--text); }
+.try .vmeta .vval { font-family: inherit; font-size: 13px; color: var(--text); }
 .try .vsigned { margin-top: 6px; font-size: 12.5px; color: var(--text3); }
 .try .vsigned strong { margin-left: 3px; }
 
@@ -750,7 +750,7 @@
   line-height: 1.25;
   letter-spacing: -.005em;
 }
-.try .psub { font-size: 12px; color: var(--text3); font-family: ui-monospace, monospace; }
+.try .psub { font-size: 12px; color: var(--text3); font-family: inherit; }
 .try .psub code { font-family: inherit; color: var(--text2); }
 .try .phead-right { display: flex; flex-direction: column; align-items: flex-end; gap: 13px; }
 .try .pscore { text-align: right; line-height: 1; }
@@ -841,7 +841,7 @@
 .try .chainviz5 .block:nth-child(9) { animation-delay: 1.25s; }
 .try .chainviz5 .block.head { border-color: var(--blue); background: var(--blue-soft); }
 .try .chainviz5 .bnum {
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 10px;
   color: var(--text3);
   letter-spacing: .04em;
@@ -851,7 +851,7 @@
 }
 .try .chainviz5 .block.head .bnum { color: var(--blue); font-weight: 600; }
 .try .chainviz5 .bhash {
-  font-family: ui-monospace, monospace;
+  font-family: inherit;
   font-size: 10.5px;
   color: var(--text2);
   margin: 4px 0 3px;
@@ -914,7 +914,7 @@
   background: var(--green);
   flex: 0 0 auto;
 }
-.try .pstatus code { font-family: ui-monospace, monospace; color: inherit; opacity: .85; font-size: 12px; }
+.try .pstatus code { font-family: inherit; color: inherit; opacity: .85; font-size: 12px; }
 .try .pstatus.broken { background: var(--red-soft); border-color: rgba(235,90,82,.28); color: var(--red); }
 .try .pstatus.broken .psdot { background: var(--red); }
 .try .pcbuttons { display: flex; gap: 10px; margin-left: auto; }
@@ -949,7 +949,7 @@
   font-weight: 600;
   margin-bottom: 5px;
 }
-.try .pfoot-val { font-size: 13px; color: var(--text2); font-family: ui-monospace, monospace; }
+.try .pfoot-val { font-size: 13px; color: var(--text2); font-family: inherit; }
 .try .pfoot-val strong { color: var(--text); font-family: "Plus Jakarta Sans", sans-serif; font-weight: 600; }
 
 .try .finalcta {

@@ -24,10 +24,10 @@
   --green: #5fd08a;
   --green-soft: rgba(95, 208, 138, 0.13);
 
-  /* next/font fall-throughs (set on <html> via layout.tsx) */
-  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --font-space: "Space Grotesk", sans-serif;
+  /* all typography unified to Plus Jakarta Sans */
+  --font-sans: var(--font-jakarta, "Plus Jakarta Sans", sans-serif);
+  --font-mono: var(--font-jakarta, "Plus Jakarta Sans", sans-serif);
+  --font-space: var(--font-jakarta, "Plus Jakarta Sans", sans-serif);
 }
 
 * {

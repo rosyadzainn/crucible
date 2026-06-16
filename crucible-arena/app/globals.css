@@ -981,7 +981,7 @@ footer {
   top: -14vw;
   right: -8vw;
   background: radial-gradient(circle at center, rgba(94, 160, 224, 0.5), transparent 70%);
-  opacity: 0.14;
+  opacity: 0.26;
 }
 .arena-aurora .ab2 {
   width: 44vw;
@@ -989,7 +989,7 @@ footer {
   bottom: -12vw;
   left: -6vw;
   background: radial-gradient(circle at center, rgba(235, 90, 82, 0.5), transparent 70%);
-  opacity: 0.12;
+  opacity: 0.26;
 }
 .arena-aurora .ab3 {
   width: 36vw;
@@ -997,7 +997,7 @@ footer {
   top: 32vh;
   left: 38vw;
   background: radial-gradient(circle at center, rgba(227, 162, 62, 0.5), transparent 70%);
-  opacity: 0.10;
+  opacity: 0.18;
 }
 /* lift .wrap above the fixed aurora — scoped via sibling combinator so landing/.try are unaffected */
 .arena-aurora ~ .wrap {

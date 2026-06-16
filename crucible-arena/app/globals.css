@@ -1143,7 +1143,7 @@ footer {
     position: static;
   }
   .vtag {
-    margin-left: 0;
+    margin-left: 20px;
   }
 }
 @media (max-width: 520px) {

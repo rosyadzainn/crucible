@@ -6,35 +6,51 @@ import { useRouter } from "next/navigation";
 const CIRC = 138.23;
 const DURATION = 2000; // ms until router.push fires
 
-export default function ArenaTransition({ caption }: { caption: string }) {
+const DEST = {
+  arena: "/arena",
+  walkthrough: "/try",
+} as const;
+
+interface Props {
+  caption: string;
+  variant?: "arena" | "walkthrough";
+}
+
+export default function ArenaTransition({ caption, variant = "arena" }: Props) {
   const router = useRouter();
+  const dest = DEST[variant];
 
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const tid = setTimeout(() => router.push("/arena"), DURATION);
+    const tid = setTimeout(() => router.push(dest), DURATION);
     return () => {
       clearTimeout(tid);
       document.body.style.overflow = prev;
     };
-  }, [router]);
+  }, [router, dest]);
 
   return (
     <div className="at-overlay" role="status" aria-label={caption}>
       <div className="at-content">
         <div className="at-ring-wrap">
-          {/* Amber ring */}
           <svg viewBox="0 0 50 50" className="at-ring-svg" aria-hidden="true">
             {/* Faint track */}
             <circle cx="25" cy="25" r="22" fill="none"
-              stroke="rgba(227,162,62,0.18)" strokeWidth="2" />
-            {/* Animated sweep arc */}
-            <circle cx="25" cy="25" r="22" fill="none"
-              stroke="var(--amber)" strokeWidth="2"
-              strokeLinecap="round"
-              strokeDasharray={CIRC}
-              className="at-arc"
-              transform="rotate(-90 25 25)" />
+              stroke={variant === "arena" ? "rgba(227,162,62,0.18)" : "rgba(230,232,236,0.08)"}
+              strokeWidth="2" />
+            {/* Animated arc — arena: amber seal sweep; walkthrough: red→blue→amber color shift */}
+            {variant === "arena" ? (
+              <circle cx="25" cy="25" r="22" fill="none"
+                stroke="var(--amber)" strokeWidth="2" strokeLinecap="round"
+                strokeDasharray={CIRC} className="at-arc"
+                transform="rotate(-90 25 25)" />
+            ) : (
+              <circle cx="25" cy="25" r="22" fill="none"
+                strokeWidth="2" strokeLinecap="round"
+                strokeDasharray={CIRC} className="wt-arc"
+                transform="rotate(-90 25 25)" />
+            )}
           </svg>
           {/* Hex mark, centered over the ring */}
           <svg viewBox="0 0 32 32" fill="none" className="at-hex" aria-hidden="true">

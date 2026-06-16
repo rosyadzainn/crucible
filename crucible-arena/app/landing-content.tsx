@@ -95,6 +95,7 @@ export default function LandingContent() {
   const { t } = useLanguage();
   const router = useRouter();
   const [arenaTransition, setArenaTransition] = useState(false);
+  const [walkthroughTransition, setWalkthroughTransition] = useState(false);
 
   function handleArenaClick() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -102,6 +103,14 @@ export default function LandingContent() {
       return;
     }
     setArenaTransition(true);
+  }
+
+  function handleWalkthroughClick() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      router.push("/try");
+      return;
+    }
+    setWalkthroughTransition(true);
   }
 
   useEffect(() => {
@@ -139,6 +148,7 @@ export default function LandingContent() {
   return (
     <>
     {arenaTransition && <ArenaTransition caption={t("transition_opening")} />}
+    {walkthroughTransition && <ArenaTransition variant="walkthrough" caption={t("transition_walkthrough")} />}
     <CrucibleIntro />
     <div className="landing">
       <div className="aurora" aria-hidden="true">
@@ -174,9 +184,9 @@ export default function LandingContent() {
             <Link href="#how">{t("lp_nav_how")}</Link>
             <Link href="#proof">{t("lp_nav_proof")}</Link>
             <LangToggle />
-            <Link href="/try" className="btn btn-primary navcta">
+            <button className="btn btn-primary navcta" onClick={handleWalkthroughClick}>
               {t("lp_nav_harden")}
-            </Link>
+            </button>
           </div>
         </div>
       </nav>
@@ -210,9 +220,9 @@ export default function LandingContent() {
             </div>
             <div className="herocta">
               <div className="ctawrap">
-                <Link href="/try" className="btn btn-primary">
+                <button className="btn btn-primary" onClick={handleWalkthroughClick}>
                   {t("lp_hero_cta_harden")}
-                </Link>
+                </button>
                 <span className="ctacap">{t("lp_hero_cap_try")}</span>
               </div>
               <div className="ctawrap">
@@ -608,9 +618,9 @@ export default function LandingContent() {
           <h2>{t("lp_final_h2")}</h2>
           <p>{t("lp_final_p")}</p>
           <div className="finalcta">
-            <Link href="/try" className="btn btn-primary">
+            <button className="btn btn-primary" onClick={handleWalkthroughClick}>
               {t("lp_final_demo")}
-            </Link>
+            </button>
             <button className="btn btn-ghost" onClick={handleArenaClick}>
               {t("lp_final_arena")}
             </button>

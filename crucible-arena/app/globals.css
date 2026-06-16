@@ -1041,6 +1041,18 @@ footer {
   from { stroke-dashoffset: 138.23; }
   to   { stroke-dashoffset: 0; }
 }
+/* walkthrough variant: ring sweeps red(Find)→blue(Fix)→amber(Prove) */
+.wt-arc {
+  stroke: var(--red);
+  stroke-dashoffset: 138.23;
+  animation: wt-arc 0.9s ease-in-out 0.08s both;
+}
+@keyframes wt-arc {
+  0%   { stroke-dashoffset: 138.23; stroke: var(--red); }
+  33%  { stroke-dashoffset: 92.15;  stroke: var(--red); }
+  67%  { stroke-dashoffset: 46.08;  stroke: var(--blue); }
+  100% { stroke-dashoffset: 0;      stroke: var(--amber); }
+}
 @keyframes at-out {
   from { opacity: 1; transform: scale(1); }
   to   { opacity: 0; transform: scale(1.05); }

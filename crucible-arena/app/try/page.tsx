@@ -534,7 +534,7 @@ function Stage4({ onDone, onBack }: { onDone: () => void; onBack: () => void }) 
 
 // ─── Stage 5 — Verify + Passport ─────────────────────────────────────────────
 
-function Stage5({ onRestart, onBack }: { onRestart: () => void; onBack: () => void }) {
+function Stage5({ onBack }: { onBack: () => void }) {
   const [broken, setBroken] = useState(false);
   const [entering, setEntering] = useState(false);
   const router = useRouter();
@@ -654,7 +654,6 @@ function Stage5({ onRestart, onBack }: { onRestart: () => void; onBack: () => vo
 
       <div className="finalcta">
         <button className="btn btn-primary" onClick={handleArenaClick}>Open the Arena →</button>
-        <button className="restart" onClick={onRestart}>Try another document</button>
         <button className="nextback" onClick={onBack}>← Back to Stage 4</button>
       </div>
     </div>
@@ -667,7 +666,6 @@ function Stage5({ onRestart, onBack }: { onRestart: () => void; onBack: () => vo
 export default function TryPage() {
   const [stage, setStage] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [foundFlaws, setFoundFlaws] = useState(0);
-  const restart = () => { setStage(1); setFoundFlaws(0); };
 
   return (
     <div className={`try stage-${stage}`}>
@@ -677,7 +675,7 @@ export default function TryPage() {
         {stage === 2 && <div className="wrap"><Stage2 foundFlaws={foundFlaws} onDone={() => setStage(3)} onBack={() => setStage(1)} /></div>}
         {stage === 3 && <div className="wrap-lg"><Stage3 onDone={() => setStage(4)} onBack={() => setStage(2)} /></div>}
         {stage === 4 && <div className="wrap-sm"><Stage4 onDone={() => setStage(5)} onBack={() => setStage(3)} /></div>}
-        {stage === 5 && <Stage5 onRestart={restart} onBack={() => setStage(4)} />}
+        {stage === 5 && <Stage5 onBack={() => setStage(4)} />}
       </main>
     </div>
   );

@@ -161,7 +161,7 @@ export default function LandingContent() {
             <Link href="#how">{t("lp_nav_how")}</Link>
             <Link href="#proof">{t("lp_nav_proof")}</Link>
             <LangToggle />
-            <Link href="#start" className="btn btn-primary navcta">
+            <Link href="/try" className="btn btn-primary navcta">
               {t("lp_nav_harden")}
             </Link>
           </div>
@@ -196,12 +196,18 @@ export default function LandingContent() {
               </span>
             </div>
             <div className="herocta">
-              <Link href="#start" className="btn btn-primary">
-                {t("lp_hero_cta_harden")}
-              </Link>
-              <Link href="#how" className="btn btn-ghost">
-                {t("lp_hero_cta_how")}
-              </Link>
+              <div className="ctawrap">
+                <Link href="/try" className="btn btn-primary">
+                  {t("lp_hero_cta_harden")}
+                </Link>
+                <span className="ctacap">{t("lp_hero_cap_try")}</span>
+              </div>
+              <div className="ctawrap">
+                <Link href="/arena" className="btn btn-ghost">
+                  {t("lp_hero_cta_how")}
+                </Link>
+                <span className="ctacap">{t("lp_hero_cap_arena")}</span>
+              </div>
             </div>
           </div>
 

@@ -124,15 +124,17 @@ const en: Dict = {
   lp_nav_agents: "The Agents",
   lp_nav_how: "How It Works",
   lp_nav_proof: "Proof",
-  lp_nav_harden: "Harden a document",
+  lp_nav_harden: "Walk through it",
 
   lp_hero_eyebrow: "Adversarial document hardening",
   lp_hero_lede:
     "Crucible turns three adversarial AI agents loose on your most dangerous documents — incident runbooks, security policies, clinical order sets — then seals every step in a tamper-evident record.",
   lp_hero_diff_a: "Most tools flag problems and stop.",
   lp_hero_diff_b: "Crucible fixes them — and proves it.",
-  lp_hero_cta_harden: "Harden a document →",
-  lp_hero_cta_how: "See how it works ↓",
+  lp_hero_cta_harden: "Walk through an example →",
+  lp_hero_cta_how: "Open the live Arena →",
+  lp_hero_cap_try: "Guided · about a minute · a real hardened runbook",
+  lp_hero_cap_arena: "A real run, sealed and verifiable",
 
   lp_card_example: "Example · Incident response",
   lp_card_critical: "Critical risk found",
@@ -219,8 +221,8 @@ const en: Dict = {
   lp_final_h2: "Harden your first document.",
   lp_final_p:
     "Load the demo and watch Red, Blue, and Arbiter go to work — then verify the sealed record yourself.",
-  lp_final_demo: "Try the demo →",
-  lp_final_arena: "Open the Arena",
+  lp_final_demo: "Walk through an example →",
+  lp_final_arena: "Open the live Arena",
 
   lp_foot_tagline: "The adversarial hardening desk for high-stakes documents.",
   lp_foot_product: "Product",
@@ -337,15 +339,17 @@ const id: Dict = {
   lp_nav_agents: "Para Agen",
   lp_nav_how: "Cara Kerja",
   lp_nav_proof: "Bukti",
-  lp_nav_harden: "Perkuat dokumen",
+  lp_nav_harden: "Telusuri contoh",
 
   lp_hero_eyebrow: "Perkuatan dokumen secara adversarial",
   lp_hero_lede:
     "Crucible melepaskan tiga agen AI adversarial ke dokumen-dokumen paling berisikomu — runbook insiden, kebijakan keamanan, order set klinis — lalu menyegel setiap langkah ke dalam catatan anti-palsu.",
   lp_hero_diff_a: "Kebanyakan tool cuma menandai masalah lalu berhenti.",
   lp_hero_diff_b: "Crucible memperbaikinya — dan membuktikannya.",
-  lp_hero_cta_harden: "Perkuat dokumen →",
-  lp_hero_cta_how: "Lihat cara kerjanya ↓",
+  lp_hero_cta_harden: "Telusuri contohnya →",
+  lp_hero_cta_how: "Buka Arena live →",
+  lp_hero_cap_try: "Terpandu · sekitar semenit · runbook nyata yang dikeraskan",
+  lp_hero_cap_arena: "Run nyata, tersegel dan dapat diverifikasi",
 
   lp_card_example: "Contoh · Respons insiden",
   lp_card_critical: "Risiko kritis ditemukan",
@@ -432,8 +436,8 @@ const id: Dict = {
   lp_final_h2: "Perkuat dokumen pertamamu.",
   lp_final_p:
     "Muat demo dan lihat Red, Blue, dan Arbiter bekerja — lalu verifikasi sendiri catatan yang tersegel.",
-  lp_final_demo: "Coba demo →",
-  lp_final_arena: "Buka Arena",
+  lp_final_demo: "Telusuri contohnya →",
+  lp_final_arena: "Buka Arena live",
 
   lp_foot_tagline: "Meja perkuatan adversarial untuk dokumen berisiko tinggi.",
   lp_foot_product: "Produk",

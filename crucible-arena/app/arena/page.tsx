@@ -725,7 +725,7 @@ function RunView({
         </div>
         <div className="field">
           <span className="k">{t("field_arbiter_score")}</span>
-          <ScoreRing score={score} />
+          <ScoreRing score={score} size={54} />
         </div>
         <span className={`vtag ${VTAG_COLOR[outcome.state]}`}>
           {(outcome.state === "HUMAN-APPROVED" || outcome.state === "APPROVED") && (

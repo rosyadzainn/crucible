@@ -75,7 +75,7 @@
   font-size: 14px;
   letter-spacing: .14em;
 }
-.try .navlogo .hex { width: 16px; height: 16px; color: var(--text); }
+.try .navlogo .brand-logo { height: 22px; }
 .try .navspacer { flex: 1; }
 .try .navstage {
   font-size: 11px;

@@ -22,10 +22,7 @@ function TryNav({ stage }: { stage: 1 | 2 | 3 | 4 | 5 }) {
         </Link>
         <div className="navsep">|</div>
         <div className="navlogo">
-          <svg className="hex" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M12 2 3 7v10l9 5 9-5V7l-9-5z" />
-          </svg>
-          CRUCIBLE
+          <Link href="/"><img src="/logo-crucible.svg" alt="Crucible" className="brand-logo" /></Link>
         </div>
         <div className="navspacer" />
         <div className="navstage">

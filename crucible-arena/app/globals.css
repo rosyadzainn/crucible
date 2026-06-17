@@ -78,6 +78,12 @@ body {
   height: 26px;
   flex: 0 0 auto;
 }
+.brand-logo {
+  height: 26px;
+  width: auto;
+  flex: 0 0 auto;
+  display: block;
+}
 .name {
   font-family: var(--font-jakarta, "Plus Jakarta Sans", var(--font-space), sans-serif);
   font-weight: 600;

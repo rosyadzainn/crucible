@@ -162,22 +162,7 @@ export default function LandingContent() {
       <nav id="navbar">
         <div className="navin">
           <div className="brand">
-            <svg className="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-              <path
-                d="M16 3.5 27 9.75v12.5L16 28.5 5 22.25V9.75L16 3.5Z"
-                stroke="#ECEEF1"
-                strokeWidth="1.6"
-              />
-              <path
-                d="M16 10.5 21.5 13.6v6.8L16 23.5l-5.5-3.1v-6.8L16 10.5Z"
-                fill="rgba(236,238,241,.10)"
-                stroke="#ECEEF1"
-                strokeWidth="1.2"
-              />
-              <circle cx="16" cy="16" r="1.7" fill="#ECEEF1" />
-            </svg>
-            {/* brand name stays "CRUCIBLE" in both languages */}
-            <span className="name">CRUCIBLE</span>
+            <Link href="/"><img src="/logo-crucible.svg" alt="Crucible" className="brand-logo" /></Link>
           </div>
           <div className="navlinks">
             <Link href="#agents">{t("lp_nav_agents")}</Link>

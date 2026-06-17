@@ -92,17 +92,26 @@ function severities(content: string | null): ("crit" | "high" | "med")[] {
   return order.filter(([k]) => found.has(k)).map(([, cls]) => cls);
 }
 
-function sevTally(reds: AuditEvent[]): { crit: number; high: number; med: number } {
-  const t = { crit: 0, high: 0, med: 0 };
+function sevTally(reds: AuditEvent[]): { crit: number; high: number; med: number; low: number } {
+  const t = { crit: 0, high: 0, med: 0, low: 0 };
+  const ITEM_BOUNDARY = /^\s*\d+\.\s/gm;
+  const FIRST_SEV = /\b(critical|high|medium|low)\b/i;
   for (const e of reds) {
     if (!e.content) continue;
+    const positions: number[] = [];
     let m: RegExpExecArray | null;
-    SEV_RE.lastIndex = 0;
-    while ((m = SEV_RE.exec(e.content))) {
-      const s = m[1].toLowerCase();
+    ITEM_BOUNDARY.lastIndex = 0;
+    while ((m = ITEM_BOUNDARY.exec(e.content))) positions.push(m.index);
+    if (positions.length === 0) continue;
+    for (let i = 0; i < positions.length; i++) {
+      const item = e.content.slice(positions[i], i + 1 < positions.length ? positions[i + 1] : e.content.length);
+      const sm = FIRST_SEV.exec(item);
+      if (!sm) continue;
+      const s = sm[1].toLowerCase();
       if (s === "critical") t.crit++;
       else if (s === "high") t.high++;
-      else t.med++;
+      else if (s === "medium") t.med++;
+      else t.low++;
     }
   }
   return t;
@@ -902,7 +911,7 @@ function Passport({
   const vulnN = totalVulns || reds.length;
   const redRounds = new Set(reds.map((e) => e.round)).size;
   const tally = sevTally(reds);
-  const hasTally = tally.crit + tally.high + tally.med > 0;
+  const hasTally = tally.crit + tally.high + tally.med + tally.low > 0;
 
   const revisions = events.filter((e) => e.event?.toLowerCase() === "revision");
   const lastRevision = revisions[revisions.length - 1];
@@ -999,6 +1008,11 @@ function Passport({
                     {tally.med > 0 && (
                       <span className="sev med">
                         {tally.med} {t("sev_med")}
+                      </span>
+                    )}
+                    {tally.low > 0 && (
+                      <span className="sev low">
+                        {tally.low} {t("sev_low")}
                       </span>
                     )}
                   </span>

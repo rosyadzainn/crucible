@@ -6,6 +6,12 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n";
 import CrucibleIntro from "@/components/CrucibleIntro";
 import ArenaTransition from "@/components/ArenaTransition";
+import type { ChainWidgetData } from "./page";
+
+function shortHash(h: string | null | undefined, head = 4, tail = 4): string {
+  if (!h) return "—";
+  return `${h.slice(0, head)}…${h.slice(-tail)}`;
+}
 
 /* Bilingual marketing landing. Uses the SAME i18n context as /arena
    (useLanguage → { lang, setLang, t }, localStorage key "crucible-lang"), so a
@@ -91,7 +97,7 @@ function LangToggle() {
   );
 }
 
-export default function LandingContent() {
+export default function LandingContent({ chainData }: { chainData?: ChainWidgetData | null }) {
   const { t } = useLanguage();
   const router = useRouter();
   const [arenaTransition, setArenaTransition] = useState(false);
@@ -264,8 +270,8 @@ export default function LandingContent() {
             </div>
             <div className="sealed">
               <span className="ok">✓</span> {t("custody_sealed")} ·{" "}
-              {t("entries_count", { n: 42 })} ·{" "}
-              <span className="mono">12241517f6…d4a</span>
+              {t("entries_count", { n: chainData?.entries ?? 42 })} ·{" "}
+              <span className="mono">{chainData ? shortHash(chainData.headHash, 8, 3) : "12241517f6…d4a"}</span>
             </div>
           </div>
         </div>
@@ -505,13 +511,19 @@ export default function LandingContent() {
           </div>
           <div className="chainviz" aria-label="Tamper-evident hash chain demo">
             <div className="chaintrack">
-              {[
+              {(chainData ? [
+                { n: "#001", h: shortHash(chainData.nodeHashes[0]) },
+                { n: "#002", h: shortHash(chainData.nodeHashes[1]) },
+                { n: "#003", h: shortHash(chainData.nodeHashes[2]), tampered: true },
+                { n: "#004", h: shortHash(chainData.nodeHashes[3]) },
+                { n: `#${String(chainData.entries).padStart(3, "0")} · HEAD`, h: shortHash(chainData.headHash, 8, 3), head: true },
+              ] : [
                 { n: "#001", h: "a3f1…b8c2" },
                 { n: "#002", h: "7d2e…4af9" },
                 { n: "#003", h: "5b9c…1e3d", tampered: true },
                 { n: "#004", h: "8a4f…2c7b" },
                 { n: "#042 · HEAD", h: "122415…d4a", head: true },
-              ].map((b, i) => (
+              ]).map((b, i) => (
                 <Fragment key={i}>
                   {i > 0 && <div className={"clink" + (i === 3 ? " after-tampered" : "")} />}
                   <div className={"cblock" + (b.tampered ? " tampered" : "") + (b.head ? " head" : "")}>
@@ -524,7 +536,7 @@ export default function LandingContent() {
               ))}
             </div>
             <div className="chainstatus">
-              <div className="cstatus cstatus-ok"><span className="cdot" />{t("pill_intact")} · 42 entries · head <span className="mono">12241517f6…d4a</span></div>
+              <div className="cstatus cstatus-ok"><span className="cdot" />{t("pill_intact")} · {chainData?.entries ?? 42} entries · head <span className="mono">{chainData ? shortHash(chainData.headHash, 8, 3) : "12241517f6…d4a"}</span></div>
               <div className="cstatus cstatus-bad"><span className="cdot" />{t("lp_chain_broken")} · entry #003 tampered — verification fails</div>
             </div>
             <div className="chainctl">

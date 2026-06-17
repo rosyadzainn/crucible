@@ -60,6 +60,7 @@ const en: Dict = {
   sev_crit: "CRITICAL",
   sev_high: "HIGH",
   sev_med: "MEDIUM",
+  sev_low: "LOW",
 
   // decision tags
   dec_another_round: "ANOTHER ROUND",
@@ -292,6 +293,7 @@ const id: Dict = {
   sev_crit: "KRITIS",
   sev_high: "TINGGI",
   sev_med: "SEDANG",
+  sev_low: "RENDAH",
 
   dec_another_round: "RONDE LAGI",
   dec_escalate: "ESKALASI",
